@@ -151,6 +151,12 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Действие сброса пароля
+     * @param string $token Токен
+     * @return ResetPasswordForm Description
+     * @throws BadRequestHttpException
+     */
     public function actionResetPassword($token)
     {
         try {

@@ -1,4 +1,5 @@
 <?php
+
 namespace common\models;
 
 use Yii;
@@ -9,10 +10,10 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
+
     public $username;
     public $password;
     public $rememberMe = true;
-
     private $_user = false;
 
     /**
@@ -30,15 +31,26 @@ class LoginForm extends Model
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'username' => 'логин',
+            'password' => 'пароль',
+            'rememberMe' => 'запомнить меня'            
+        ];
+    }
+
     /**
      * Validates the password.
      * This method serves as the inline validation for password.
      */
     public function validatePassword()
     {
-        if (!$this->hasErrors()) {
+        if (!$this->hasErrors())
+        {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
+            if (!$user || !$user->validatePassword($this->password))
+            {
                 $this->addError('password', 'Incorrect username or password.');
             }
         }
@@ -51,9 +63,11 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
+        if ($this->validate())
+        {
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
-        } else {
+        } else
+        {
             return false;
         }
     }
@@ -65,10 +79,12 @@ class LoginForm extends Model
      */
     public function getUser()
     {
-        if ($this->_user === false) {
+        if ($this->_user === false)
+        {
             $this->_user = User::findByUsername($this->username);
         }
 
         return $this->_user;
     }
+
 }

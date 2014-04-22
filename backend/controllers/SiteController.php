@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controllers;
 
 use Yii;
@@ -12,6 +13,7 @@ use yii\filters\VerbFilter;
  */
 class SiteController extends Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -26,7 +28,7 @@ class SiteController extends Controller
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout', 'index', 'index2', 'index3', 'index4', 'index5'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -58,18 +60,42 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    public function actionIndex2()
+    {
+        return $this->render('index');
+    }
+
+    public function actionIndex3()
+    {
+        return $this->render('index');
+    }
+
+    public function actionIndex4()
+    {
+        return $this->render('index');
+    }
+
+    public function actionIndex5()
+    {
+        return $this->render('index');
+    }
+
     public function actionLogin()
     {
-        if (!\Yii::$app->user->isGuest) {
+        if (!\Yii::$app->user->isGuest)
+        {
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login())
+        {
             return $this->goBack();
-        } else {
+        } else
+        {
+            $this->layout='simple';
             return $this->render('login', [
-                'model' => $model,
+                        'model' => $model,
             ]);
         }
     }
@@ -80,4 +106,5 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
+
 }
