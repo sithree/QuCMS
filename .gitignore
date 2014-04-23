@@ -28,3 +28,17 @@ composer.phar
 phpunit.phar
 # local phpunit config
 /phpunit.xml
+!/vendor/
+/vendor/composer/
+/vendor/bi
+/vendor/swiftmailer/
+/vendor/yiisoft/
+/vendor/bin/
+/vendor/psr/
+/vendor/ezyang/
+/vendor/twbs/
+/vendor/phpdocumentor/
+/vendor/phpspec/
+/vendor/nikic/
+/vendor/cebe/
+/vendor/autoload.php

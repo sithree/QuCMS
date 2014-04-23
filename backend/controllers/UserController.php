@@ -5,7 +5,7 @@ namespace backend\controllers;
 use Yii;
 use common\models\User;
 use backend\models\search\User as UserSearch;
-use yii\web\Controller;
+use siasoft\qucms\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -35,7 +35,7 @@ class UserController extends Controller
         $searchModel = new UserSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
 
-        return $this->render('index', [
+        return $this->render(false, [
             'dataProvider' => $dataProvider,
             'searchModel' => $searchModel,
         ]);

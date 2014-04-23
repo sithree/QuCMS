@@ -98,7 +98,7 @@ AppAsset::register($this);
                                             ['label' => 'sub item 5', 'url' => ['site/index5']]
                                         ]],
                                     ['label' => 'Пользователи <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
-                                            ['label' => 'Список'],
+                                            ['label' => 'Список', 'url' => ['user/index']],
                                             ['label' => 'Роли'],
                                             ['label' => 'Права']
                                         ]],
@@ -213,12 +213,6 @@ AppAsset::register($this);
                 </div>
                 <!-- END CONTENT HEADER -->
 
-
-
-
-                <!-- ============================================================== -->
-                <!-- START YOUR CONTENT HERE -->
-                <!-- ============================================================== -->
                 <div class="container body content rows scroll-y">
                     <?=
                     Breadcrumbs::widget([
@@ -226,23 +220,14 @@ AppAsset::register($this);
                     ])
                     ?>
                     <?= $content ?>
-                    <!-- Footer -->
                     <footer class="footer">
                         <div class="container">
                             <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
                             <p class="pull-right"><?= Yii::powered() ?></p>
                         </div>
                     </footer>
-                    <!-- End Footer -->
-
                 </div>
-                <!-- ============================================================== -->
-                <!-- END YOUR CONTENT HERE -->
-                <!-- ============================================================== -->
-
-
             </div>
-            <!-- END CONTENT -->
 
 
 

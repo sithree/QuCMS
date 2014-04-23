@@ -1,0 +1,22 @@
+{
+    "name": "siasoft/qucms",
+    "description": "CMS",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "BSD-4-Clause",
+    "authors": [
+        {
+            "name": "Ruslan",
+            "email": "Bump08@mail.ru"
+        }
+    ],
+    "require": {
+		"yiisoft/yii2": "*",
+                "yiisoft/yii2-bootstrap": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "siasoft\\qucms\\": ""
+        }
+    }
+}

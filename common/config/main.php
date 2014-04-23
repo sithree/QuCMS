@@ -2,7 +2,7 @@
 
 return [
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
-    'extensions' => require(__DIR__ . '/../../vendor/yiisoft/extensions.php'),
+    'extensions' => yii\helpers\ArrayHelper::merge(require(__DIR__ . '/../../vendor/yiisoft/extensions.php'), require(__DIR__ . '/../../vendor/siasoft/extensions.php')),
     'language' => 'ru-RU',
     'components' => [
         'cache' => [
