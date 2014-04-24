@@ -1,8 +1,12 @@
 <?php
+
 namespace siasoft\qucms\web;
+
+use yii\helpers\Url;
 
 class Controller extends \yii\web\Controller
 {
+
     /**
      * @inheritdoc
      */
@@ -15,14 +19,27 @@ class Controller extends \yii\web\Controller
             $this->layout = 'ajax.php';
         }
         $result = parent::render($view, $params);
-        if (\Yii::$app->getRequest()->isAjax) {
-            $module = $this->module['debug'];
+        if (\Yii::$app->request->isAjax) {
+            $debug = \Yii::$app->modules['debug'];
             $result = json_encode([
+                'status' => 200,
                 'title' => $this->view->title,
                 'html' => $result,
-                'debug' => $module->runAction('', ['tag' => $module->id])
+                'debug' => Url::toRoute(['/' . $debug->id . '/default/toolbar', 'tag' => $debug->logTarget->tag])
             ]);
         }
         return $result;
     }
+
+    public function redirect($url, $statusCode = 302)
+    {
+        if (\Yii::$app->request->isAjax) {
+            return json_encode([
+                'status' => $statusCode,
+                'url' => Url::to($url)
+            ]);
+        }
+        return parent::redirect($url, $statusCode);
+    }
+
 }

@@ -1,23 +1,3 @@
-/*
-=========================================================================
-Lanceng - Responsive Admin Template
-Exclusive on Wrapbootstrap (http://wrapbootstrap.com)
-
-Author				Isoh Design Studio
-URL					http://isohdesign.com
-Designer			Ari Rusmanto (http://twitter.com/arirusmanto)
-Version				1.1
-Update Released		February 13, 2014
-=========================================================================
-*/
-
-
-/*
-=========================================================================
-BOOTSTRAP LITLE CUSTOM
-=========================================================================
-*/
-
 /* Import font from Google Font (Open sans) */
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700);
 
@@ -601,7 +581,7 @@ i.danger{color: #E85344}
     top: 50px;
     bottom: 0px;
     background: #E5E9EC;
-    padding: 20px;
+    padding: 10px;
     font-size: 13px;
 }
 .button-menu-mobile{
@@ -2700,4 +2680,12 @@ a:focus .icon-vimeo {
 
 b.caret {
     display: none;
+}
+
+-ms-viewport {
+    width: auto;
+}
+
+body, html { 
+  -ms-overflow-style: none !important; 
 }

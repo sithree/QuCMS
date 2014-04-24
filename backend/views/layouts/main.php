@@ -213,7 +213,7 @@ AppAsset::register($this);
                 </div>
                 <!-- END CONTENT HEADER -->
 
-                <div class="container body content rows scroll-y">
+                <div class="body content rows scroll-y">
                     <?=
                     Breadcrumbs::widget([
                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],

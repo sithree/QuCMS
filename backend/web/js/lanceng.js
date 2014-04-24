@@ -45,29 +45,50 @@ $(document).ready(function() {
         }
     });
 
-    function toPage(link, pushState) {
-        $("#loading").fadeIn("fast");
+    function toPage(link, pushState, data) {
+        //$("#loading").fadeIn("fast");
         $.ajax({
-            'success': function(result) {
-                $('.container.body.content.rows.scroll-y').html(result.html);
-                $("#loading").fadeOut("fast");
-                if (pushState){
-                    history.pushState(null, result.title, link);
+            success: function(result) {
+                if (result.status === 200) {
+                    $('.body.content.rows.scroll-y').html(result.html);
+                    //$("#loading").fadeOut("fast");
+
+                    if (pushState) {
+                        history.pushState(null, result.title, link);
+                    }
+                    $.ajax({
+                        success: function(result) {
+                            $('#yii-debug-toolbar').replaceWith(result);
+                        },
+                        url: result.debug,
+                        cache: false
+                    });
                 }
+                else if (result.status === 302)
+                    toPage(result.url, true, '');
             },
             dataType: 'json',
-            'url': link,
-            'cache': false
+            url: link,
+            cache: false,
+            type: data === "" ? 'GET' : 'POST',
+            data: data
         });
     }
 
     window.onpopstate = function() {
-        toPage(document.location, false);
+        toPage(document.location, false, '');
     };
 
-    $('#sidebar-menu a[href!="#"]').click(function() {
-        var link = $(this).attr('href');        
-        toPage(link, true);
+    $(document).on('click', '#sidebar-menu a[href!="#"], a.ajax, .breadcrumb a', function() {
+        var link = $(this).attr('href');
+        toPage(link, true, '');
+        return false;
+    });
+
+    $(document).on('click', 'button.ajax', function() {
+        form = $(this).parents('form');
+        action = form.attr('action');
+        toPage(action === '' ? document.location : action, false, form.serialize());
         return false;
     });
 

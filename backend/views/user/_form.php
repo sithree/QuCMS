@@ -14,18 +14,25 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'role')->textInput() ?>
-
-    <?= $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
-
-    <?= $form->field($model, 'email')->textInput(['maxlength' => 255]) ?>
+    <div class="row">
+        <div class="col-sm-6">
+            <?= $form->field($model, 'username')->textInput(['maxlength' => 255]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'email')->textInput(['maxlength' => 255]) ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'status')->textInput() ?>
+        </div>
+        <div class="col-sm-6">
+            <?= $form->field($model, 'role')->textInput() ?>
+        </div>
+    </div>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? 'Создать' : 'Изменить', ['class' => ($model->isNewRecord ? 'btn btn-success' : 'btn btn-primary').' ajax']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
-
+<br>
 </div>
