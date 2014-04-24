@@ -45,7 +45,7 @@ $(document).ready(function() {
         }
     });
 
-    function toPage(link, pushState, data) {
+    function toPage(link, pushState, data, method) {
         //$("#loading").fadeIn("fast");
         $.ajax({
             success: function(result) {
@@ -54,7 +54,7 @@ $(document).ready(function() {
                     //$("#loading").fadeOut("fast");
 
                     if (pushState) {
-                        history.pushState(null, result.title, link);
+                        history.pushState(null, result.title, result.url);
                     }
                     $.ajax({
                         success: function(result) {
@@ -65,30 +65,30 @@ $(document).ready(function() {
                     });
                 }
                 else if (result.status === 302)
-                    toPage(result.url, true, '');
+                    toPage(result.url, true, '', 'GET');
             },
             dataType: 'json',
             url: link,
             cache: false,
-            type: data === "" ? 'GET' : 'POST',
+            type: method,
             data: data
         });
     }
 
     window.onpopstate = function() {
-        toPage(document.location, false, '');
+        toPage(document.location, false, '', 'GET');
     };
 
-    $(document).on('click', '#sidebar-menu a[href!="#"], a.ajax, .breadcrumb a', function() {
+    $(document).on('click', '#sidebar-menu a[href!="#"], a.ajax, .breadcrumb a, .grid-view thead a, .grid-view .pagination a', function() {
         var link = $(this).attr('href');
-        toPage(link, true, '');
+        toPage(link, true, '', 'GET');
         return false;
     });
 
     $(document).on('click', 'button.ajax', function() {
         form = $(this).parents('form');
         action = form.attr('action');
-        toPage(action === '' ? document.location : action, false, form.serialize());
+        toPage(action === '' ? document.location : action, false, form.serialize(), form.attr('method'));
         return false;
     });
 

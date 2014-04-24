@@ -25,6 +25,7 @@ class Controller extends \yii\web\Controller
                 'status' => 200,
                 'title' => $this->view->title,
                 'html' => $result,
+                'url' => \Yii::$app->getRequest()->,
                 'debug' => Url::toRoute(['/' . $debug->id . '/default/toolbar', 'tag' => $debug->logTarget->tag])
             ]);
         }

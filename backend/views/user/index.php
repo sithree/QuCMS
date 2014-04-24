@@ -9,7 +9,7 @@ use yii\grid\GridView;
  * @var backend\models\search\User $searchModel
  */
 
-$this->title = 'Пользователи';
+$this->title = 'пользователи';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
