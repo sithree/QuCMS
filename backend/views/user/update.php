@@ -7,10 +7,10 @@ use yii\helpers\Html;
  * @var common\models\User $model
  */
 
-$this->title = 'пользователь: ' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'пользователи', 'url' => ['index']];
+$this->title = 'Пользователь: ' . $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'изменить';
+$this->params['breadcrumbs'][] = 'Изменить';
 ?>
 <div class="user-update">
 

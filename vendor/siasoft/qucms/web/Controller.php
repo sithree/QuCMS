@@ -7,6 +7,22 @@ use yii\helpers\Url;
 class Controller extends \yii\web\Controller
 {
 
+    protected function clearParams($array)
+    {
+        $result = [];
+        if (isset($array['r'])) {
+            $result[] = $array['r'];
+        }
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                $result[$key] = $this->clearParams($value);
+            } elseif ($key !== '_' && $key !== 'r' && $value) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
     /**
      * @inheritdoc
      */
@@ -15,9 +31,11 @@ class Controller extends \yii\web\Controller
         if ($view === false) {
             $view = $this->action->id;
         }
-        if (\Yii::$app->getRequest()->isAjax) {
+        if (\Yii::$app->request->isAjax) {
             $this->layout = 'ajax.php';
         }
+
+
         $result = parent::render($view, $params);
         if (\Yii::$app->request->isAjax) {
             $debug = \Yii::$app->modules['debug'];
@@ -25,7 +43,7 @@ class Controller extends \yii\web\Controller
                 'status' => 200,
                 'title' => $this->view->title,
                 'html' => $result,
-                'url' => \Yii::$app->getRequest()->,
+                'url' => \yii\helpers\Url::toRoute($this->clearParams(\Yii::$app->request->get())),
                 'debug' => Url::toRoute(['/' . $debug->id . '/default/toolbar', 'tag' => $debug->logTarget->tag])
             ]);
         }

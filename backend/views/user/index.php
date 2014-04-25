@@ -3,19 +3,16 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-/**
- * @var yii\web\View $this
- * @var yii\data\ActiveDataProvider $dataProvider
- * @var backend\models\search\User $searchModel
- */
+/* @var $this yii\web\View */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $searchModel backend\models\search\User */
 
-$this->title = 'пользователи';
+$this->title = 'Пользователи';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
     <?= $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>

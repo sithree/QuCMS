@@ -14,7 +14,6 @@ use yii\widgets\ActiveForm;
 
     <?php
     $form = ActiveForm::begin([
-                'action' => ['user/index'],
                 'method' => 'get',
     ]);
     ?>
@@ -43,7 +42,7 @@ use yii\widgets\ActiveForm;
     </div>
 
     <div class="form-group clear">
-        <?= Html::submitButton('<i class="fa fa-search"></i> Найти', ['class' => 'btn btn-primary ajax']) ?>
+        <?= Html::submitButton('<i class="fa fa-search"></i> Найти', ['class' => 'btn btn-primary ajax', 'data-history' => 1]) ?>
         <?= Html::resetButton('<i class="fa fa-refresh"></i> Сбросить', ['class' => 'btn btn-default']) ?>
     </div>
 

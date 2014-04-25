@@ -67,7 +67,7 @@ AppAsset::register($this);
                             <div class="media-body">
                                 <h4 class="media-heading"><strong><?= Yii::$app->user->identity->username ?></strong></h4>
                                 <a href="user-profile.html">Редактировать</a>
-                                <?= Html::a('Выйти', ['site/logout'], ['data-method' => 'post']) ?>
+                                <?= Html::a('Выйти', ['site/logout'], ['data-method' => 'post', 'class' => 'noajax']) ?>
                             </div><!-- End div .media-body -->
                         </div><!-- End div .media -->
 
@@ -201,7 +201,7 @@ AppAsset::register($this);
                                             <li class="divider"></li>
                                             <li class="dropdown-header">Другие действия</li>
                                             <li><a href="#fakelink">Помощь</a></li>
-                                            <li><a class="md-trigger" data-modal="logout-modal">Выйти</a></li>
+                                            <li><?= Html::a('Выйти', ['site/logout'], ['data-method' => 'post', 'class' => 'noajax md-triger']) ?></li>
                                         </ul>
                                     </li>
                                     <!-- End Dropdown User session -->
