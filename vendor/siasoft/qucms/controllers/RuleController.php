@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\controllers;
+namespace siasoft\qucms\controllers;
 
 class RuleController extends \siasoft\qucms\web\Controller
 {
