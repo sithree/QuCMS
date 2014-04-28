@@ -85,45 +85,12 @@ AppAsset::register($this);
                         <div id="sidebar-menu">
                             <?=
                             Nav::widget([
-                                'clientOptions' => false,
-                                'clientEvents' => false,
-                                'encodeLabels' => false,
-                                'activateParents' => true,
-                                'items' => [
-                                    ['label' => 'item 1 <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
-                                            ['label' => 'sub item 1', 'url' => ['site/index']],
-                                            ['label' => 'sub item 2', 'url' => ['site/index2']],
-                                            ['label' => 'sub item 3', 'url' => ['site/index3']],
-                                            ['label' => 'sub item 4', 'url' => ['site/index4']],
-                                            ['label' => 'sub item 5', 'url' => ['site/index5']]
-                                        ]],
-                                    ['label' => 'Пользователи <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
-                                            ['label' => 'Список', 'url' => ['user/index']],
-                                            ['label' => 'Роли'],
-                                            ['label' => 'Права']
-                                        ]],
-                                    ['label' => 'item 3 <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
-                                            ['label' => 'sub item 1'],
-                                            ['label' => 'sub item 2'],
-                                            ['label' => 'sub item 3'],
-                                            ['label' => 'sub item 4'],
-                                            ['label' => 'sub item 5']
-                                        ]],
-                                    ['label' => 'item 4 <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
-                                            ['label' => 'sub item 1'],
-                                            ['label' => 'sub item 2'],
-                                            ['label' => 'sub item 3'],
-                                            ['label' => 'sub item 4'],
-                                            ['label' => 'sub item 5']
-                                        ]],
-                                    ['label' => 'item 5 <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
-                                            ['label' => 'sub item 1'],
-                                            ['label' => 'sub item 2'],
-                                            ['label' => 'sub item 3'],
-                                            ['label' => 'sub item 4'],
-                                            ['label' => 'sub item 5']
-                                        ]]
-                        ]])
+                            'clientOptions' => false,
+                            'clientEvents' => false,
+                            'encodeLabels' => false,
+                            'activateParents' => true,
+                            'items' => \siasoft\qucms\Module::GetMenu()
+                            ])
                             ?>
                         </div>
                     </div><!-- End div .sidebar-inner .slimscroller -->

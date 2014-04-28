@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace siasoft\qucms\models;
 
 use Yii;
 
@@ -58,6 +58,6 @@ class AuthItemChild extends \yii\db\ActiveRecord
      */
     public function getChild0()
     {
-        return $this->hasOne(AuthItem::className(), ['name' => 'child']);
+        return $this->hasMany(AuthItem::className(), ['name' => 'child']);
     }
 }

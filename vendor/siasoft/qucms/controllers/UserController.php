@@ -3,8 +3,8 @@
 namespace siasoft\qucms\controllers;
 
 use Yii;
-use common\models\User;
-use backend\models\search\User as UserSearch;
+use siasoft\qucms\models\User;
+use siasoft\qucms\models\search\User as UserSearch;
 use siasoft\qucms\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

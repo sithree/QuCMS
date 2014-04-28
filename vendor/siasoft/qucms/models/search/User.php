@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\models\search;
+namespace siasoft\qucms\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\User as UserModel;
+use siasoft\qucms\models\User as UserModel;
 
 /**
  * User represents the model behind the search form about `common\models\User`.

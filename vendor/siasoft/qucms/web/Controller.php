@@ -11,7 +11,7 @@ class Controller extends \yii\web\Controller
     {
         $result = [];
         if (isset($array['r'])) {
-            $result[] = $array['r'];
+            $result[] = '/' . $array['r'];
         }
         foreach ($array as $key => $value) {
             if (is_array($value)) {
@@ -32,7 +32,7 @@ class Controller extends \yii\web\Controller
             $view = $this->action->id;
         }
         if (\Yii::$app->request->isAjax) {
-            $this->layout = 'ajax.php';
+            $this->layout = '/ajax.php';
         }
 
 

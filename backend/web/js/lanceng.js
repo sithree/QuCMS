@@ -53,24 +53,33 @@ $(document).ready(function() {
     function toPage(link, pushState, data, method) {
         //$("#loading").fadeIn("fast");
         $.ajax({
-            success: function(result) {
-                if (result.status === 200) {
-                    $('.body.content.rows.scroll-y').html(result.html);
+            complete: function(result) {
+                try
+                {
+                    object = JSON.parse(result.responseText);
+                }
+                catch(e)
+                {
+                    document.location.href = link;
+                    return;
+                }
+                if (object.status === 200) {                    
+                    $('.body.content.rows.scroll-y').html(object.html);
                     //$("#loading").fadeOut("fast");
 
                     if (pushState) {
-                        history.pushState(null, result.title, result.url);
+                        history.pushState(null, object.title, object.url);
                     }
                     $.ajax({
                         success: function(result) {
-                            $('#yii-debug-toolbar').replaceWith(result);
+                            $('#yii-debug-toolbar').parent().html(result);
                         },
-                        url: result.debug,
+                        url: object.debug,
                         cache: false
                     });
                 }
-                else if (result.status === 302)
-                    toPage(result.url, true, '', 'GET');
+                else if (object.status === 302)
+                    toPage(object.url, true, '', 'GET');
             },
             dataType: 'json',
             url: link,
@@ -84,7 +93,7 @@ $(document).ready(function() {
         toPage(document.location, false, '', 'GET');
     };
 
-    $(document).on('click', 'a:not(.noajax)'// .grid-view thead a, .grid-view .pagination a'
+    $(document).on('click', 'a:not(.noajax, #yii-debug-toolbar a)'// .grid-view thead a, .grid-view .pagination a'
             , function() {
                 var link = $(this).attr('href');
                 toPage(link, true, '', 'GET');

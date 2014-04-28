@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace siasoft\qucms\models;
 
 use Yii;
 
@@ -23,6 +23,16 @@ class AuthItem extends \yii\db\ActiveRecord
 {
     const TYPE_ROLE = 1;
     const TYPE_PERMISSION = 2;
+    
+    /**
+     * @var AuthItem
+     */
+    public $parent;
+    
+    /**
+     * @var AuthItem[]
+     */
+    public $childrens;
 
     /**
      * @inheritdoc
