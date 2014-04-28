@@ -8,7 +8,7 @@ class RuleController extends \siasoft\qucms\web\Controller
     {
         /* @var $auth \yii\rbac\DbManager */
         foreach (scandir(\Yii::$app->controllerPath) as $class) {
-            if ()
+            //if ()
             require \Yii::$app->controllerPath.$class;
         }
         foreach (get_declared_classes() as $class) {
