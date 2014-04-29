@@ -1,11 +1,11 @@
 <?php
 
-namespace backend\models\search;
+namespace siasoft\qucms\models\search;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use backend\models\AuthItem as AuthItemModel;
+use siasoft\qucms\models\AuthItem as AuthItemModel;
 
 /**
  * AuthItem represents the model behind the search form about `backend\models\AuthItem`.

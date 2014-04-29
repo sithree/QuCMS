@@ -4,14 +4,14 @@ use yii\helpers\Html;
 
 /**
  * @var yii\web\View $this
- * @var backend\models\AuthItem $model
+ * @var common\models\User $model
  */
 
-$this->title = 'Create Auth Item';
-$this->params['breadcrumbs'][] = ['label' => 'Auth Items', 'url' => ['index']];
+$this->title = 'Создать';
+$this->params['breadcrumbs'][] = ['label' => 'Разрешения', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="auth-item-create">
+<div class="user-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

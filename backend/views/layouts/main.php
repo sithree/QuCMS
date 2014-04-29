@@ -21,6 +21,7 @@ AppAsset::register($this);
         <?php $this->head() ?>
         <?php $this->registerCssFile('/third/font-awesome/css/font-awesome.min.css') ?>
         <?php $this->registerCssFile('/third/nifty-modal/css/component.css') ?>
+        <?php $this->registerCssFile('/third/icheck/skins/minimal/grey.css'); ?>
         <link href="/css/style-responsive.css" rel="stylesheet">
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -85,11 +86,13 @@ AppAsset::register($this);
                         <div id="sidebar-menu">
                             <?=
                             Nav::widget([
-                            'clientOptions' => false,
-                            'clientEvents' => false,
-                            'encodeLabels' => false,
-                            'activateParents' => true,
-                            'items' => \siasoft\qucms\Module::GetMenu()
+                                'clientOptions' => false,
+                                'clientEvents' => false,
+                                'encodeLabels' => false,
+                                'activateParents' => true,
+                                'items' => yii\helpers\ArrayHelper::merge([
+                                    ['label' => 'Главная', 'url' => ['/']]
+                                ], \siasoft\qucms\Module::GetMenu())
                             ])
                             ?>
                         </div>
@@ -294,7 +297,9 @@ AppAsset::register($this);
 
         <?php $this->endBody() ?>
         <?php $this->registerJsFile('/third/slimscroll/jquery.slimscroll.min.js'); ?>
+        <?php $this->registerJsFile('/third/icheck/icheck.min.js', ['yii\web\JqueryAsset']); ?>
         <?php $this->registerJsFile('/js/lanceng.js'); ?>        
+        
     </body>
 </html>
 <?php $this->endPage() ?>

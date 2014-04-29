@@ -30,10 +30,13 @@ class Module extends \yii\base\Module
     public static function GetMenu()
     {
         $event = new \yii\base\Event();
-        $event->data = [[
-        'label' => 'Доступ <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
-            ['label' => 'Пользователи', 'url' => ['/qucms/user/index/']],
-            ['label' => 'Разрешения', 'url' => ['/qucms/permission/index/']]
+        $event->data = [
+            ['label' => 'cms', 'url' => ['/qucms/default/index']],
+            [
+                'label' => 'Доступ <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
+                    ['label' => 'Пользователи', 'url' => ['/qucms/user/index']],
+                    ['label' => 'Роли', 'url' => ['/qucms/role/index']],
+                    ['label' => 'Разрешения', 'url' => ['/qucms/permission/index']]
         ]]];
         \Yii::$app->trigger(self::ADMIN_MENU_GENERATION, $event);
         return $event->data;

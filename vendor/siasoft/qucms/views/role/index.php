@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $searchModel \siasoft\qucms\models\search\AuthItem */
 /* @var $model \siasoft\qucms\models\AuthItem */
 
-$this->title = 'Разрешения';
+$this->title = 'Роли';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="permissions-index">

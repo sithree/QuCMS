@@ -107,5 +107,9 @@ $(document).ready(function() {
         return false;
     });
 
-
+    $('input[type="checkbox"]').iCheck({
+	checkboxClass: 'icheckbox_minimal-grey',
+	radioClass: 'iradio_minimal-grey',
+	increaseArea: '20%' // optional
+	});
 });
