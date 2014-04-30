@@ -23,16 +23,6 @@ class AuthItem extends \yii\db\ActiveRecord
 {
     const TYPE_ROLE = 1;
     const TYPE_PERMISSION = 2;
-    
-    /**
-     * @var AuthItem
-     */
-    public $parent;
-    
-    /**
-     * @var AuthItem[]
-     */
-    public $childrens;
 
     /**
      * @inheritdoc
@@ -70,6 +60,24 @@ class AuthItem extends \yii\db\ActiveRecord
             'created_at' => 'Создано',
             'updated_at' => 'Изменено',
         ];
+    }
+
+    /**
+     * select roles
+     * @param \yii\db\ActiveQuery $query
+     */
+    public static function roles($query)
+    {
+        $query->andWhere('type = ' . AuthItem::TYPE_ROLE);
+    }
+
+    /**
+     * select permissions
+     * @param \yii\db\ActiveQuery $query
+     */
+    public function permissions($query)
+    {
+        $query->andWhere('type = ' . AuthItem::TYPE_PERMISSION);
     }
 
     /**

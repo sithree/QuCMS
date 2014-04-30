@@ -6,20 +6,31 @@ use Yii;
 use siasoft\qucms\models\AuthItem;
 use siasoft\qucms\models\search\AuthItem as AuthItemSearch;
 
+/**
+ * Permission controller
+ */
 class PermissionController extends \siasoft\qucms\web\Controller
 {
 
+    /**
+     * List all permissions
+     * @return string
+     */
     public function actionIndex()
     {
         $searchModel = new AuthItemSearch();
-        $dataProvider = $searchModel->search(\yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(), ['AuthItem' => ['type' => AuthItem::TYPE_PERMISSION]]));
+        $dataProvider = $searchModel->permissions->search(Yii::$app->request->getQueryParams());
         $dataProvider->pagination->pageSize = 50;
         return $this->render(false, [
                     'dataProvider' => $dataProvider,
                     'searchModel' => $searchModel
         ]);
     }
-
+    
+    /**
+     * Create new permissions
+     * @return string
+     */
     public function actionCreate()
     {
         $model = new AuthItem();
@@ -38,6 +49,11 @@ class PermissionController extends \siasoft\qucms\web\Controller
         ]);
     }
 
+    /**
+     * Update permission
+     * @param int $id name off permission
+     * @return type
+     */
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
@@ -50,11 +66,14 @@ class PermissionController extends \siasoft\qucms\web\Controller
             ]);
         }
     }
-
+    
+    /**
+     * 
+     * @param type $id
+     */
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-
         return $this->redirect(['index']);
     }
 

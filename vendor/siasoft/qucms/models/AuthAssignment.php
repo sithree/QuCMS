@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\models;
+namespace siasoft\qucms\models;
 
 use Yii;
 
@@ -15,6 +15,7 @@ use Yii;
  */
 class AuthAssignment extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -53,5 +54,10 @@ class AuthAssignment extends \yii\db\ActiveRecord
     public function getItemName()
     {
         return $this->hasOne(AuthItem::className(), ['name' => 'item_name']);
+    }
+
+    public function __toString()
+    {
+        return $this->item_name;
     }
 }

@@ -13,7 +13,7 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'siasoft\qucms\models\User',
             'enableAutoLogin' => true,
         ],
         'log' => [

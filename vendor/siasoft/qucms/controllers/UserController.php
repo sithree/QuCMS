@@ -4,6 +4,7 @@ namespace siasoft\qucms\controllers;
 
 use Yii;
 use siasoft\qucms\models\User;
+use siasoft\qucms\models\AuthItem;
 use siasoft\qucms\models\search\User as UserSearch;
 use siasoft\qucms\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -79,12 +80,12 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'roles' => AuthItem::find()->where('type = ' . AuthItem::TYPE_ROLE)->select('name, description')->all()
             ]);
         }
     }

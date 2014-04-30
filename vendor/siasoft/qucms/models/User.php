@@ -5,6 +5,7 @@ namespace siasoft\qucms\models;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\Security;
+use yii\helpers\ArrayHelper;
 use yii\web\IdentityInterface;
 
 /**
@@ -62,6 +63,19 @@ class User extends ActiveRecord implements IdentityInterface
                 ],
             ],
         ];
+    }
+
+    public function getRoleName()
+    {
+        if ($this->auth) {
+            return $this->auth->itemName;
+        }
+        return '';
+    }
+
+    public function setRoleName()
+    {
+        
     }
 
     /**
@@ -185,14 +199,29 @@ class User extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-        'username' => 'логин',
-        'email' => 'E-mail',
-        'role' => 'роль',
-        'status' => 'статус',
-        'created_at' => 'создан',
-        'updated_at' => 'изменен',
-        'password' => 'пароль'
+            'username' => 'логин',
+            'email' => 'E-mail',
+            'role' => 'роль',
+            'status' => 'статус',
+            'created_at' => 'создан',
+            'updated_at' => 'изменен',
+            'password' => 'пароль'
         ];
+    }
+
+    public function getAuth()
+    {
+        return $this->hasMany(AuthAssignment::className(), ['user_id' => 'id']);
+    }
+    
+    public function getRoleKeys()
+    {
+        return ArrayHelper::getColumn($this->auth, 'item_name');
+    }
+    
+    public function setRoleKeys()
+    {
+        
     }
 
     /**

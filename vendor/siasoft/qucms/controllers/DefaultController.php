@@ -9,7 +9,7 @@ use common\models\LoginForm;
 use yii\filters\VerbFilter;
 
 /**
- * Site controller
+ * Default controller
  */
 class DefaultController extends Controller
 {
@@ -17,7 +17,4 @@ class DefaultController extends Controller
     {
         return $this->render();
     }
-
-
-
 }

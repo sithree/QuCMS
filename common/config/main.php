@@ -12,4 +12,7 @@ return [
             'class' => 'yii\rbac\DbManager',
         ],
     ],
+    'modules' => [
+        'qucms' => 'siasoft\qucms\Module'
+    ]
 ];
