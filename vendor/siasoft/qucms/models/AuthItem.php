@@ -3,6 +3,7 @@
 namespace siasoft\qucms\models;
 
 use Yii;
+use siasoft\qucms\models\query\AuthItem as AuthItemQuery;
 
 /**
  * This is the model class for table "auth_item".
@@ -21,15 +22,17 @@ use Yii;
  */
 class AuthItem extends \yii\db\ActiveRecord
 {
-    const TYPE_ROLE = 1;
-    const TYPE_PERMISSION = 2;
-
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return 'auth_item';
+    }
+    
+    public static function find()
+    {
+        return new AuthItemQuery(get_called_class());
     }
 
     /**
@@ -60,24 +63,6 @@ class AuthItem extends \yii\db\ActiveRecord
             'created_at' => 'Создано',
             'updated_at' => 'Изменено',
         ];
-    }
-
-    /**
-     * select roles
-     * @param \yii\db\ActiveQuery $query
-     */
-    public static function roles($query)
-    {
-        $query->andWhere('type = ' . AuthItem::TYPE_ROLE);
-    }
-
-    /**
-     * select permissions
-     * @param \yii\db\ActiveQuery $query
-     */
-    public function permissions($query)
-    {
-        $query->andWhere('type = ' . AuthItem::TYPE_PERMISSION);
     }
 
     /**

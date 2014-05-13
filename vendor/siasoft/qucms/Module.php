@@ -37,7 +37,14 @@ class Module extends \yii\base\Module
                     ['label' => 'Пользователи', 'url' => ['/qucms/user/index']],
                     ['label' => 'Роли', 'url' => ['/qucms/role/index']],
                     ['label' => 'Разрешения', 'url' => ['/qucms/permission/index']]
-        ]]];
+                ]],
+            [
+                'label' => 'Изображения <i class="fa fa-angle-double-down i-right"></i>', 'items' => [
+                    ['label' => 'Настройки', 'url' => ['/qucms/image/index']],
+                    ['label' => 'Разделы', 'url' => ['/qucms/image-section/index']]
+                ]
+            ]
+        ];
         \Yii::$app->trigger(self::ADMIN_MENU_GENERATION, $event);
         return $event->data;
     }

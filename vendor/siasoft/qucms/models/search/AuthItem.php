@@ -17,13 +17,8 @@ class AuthItem extends AuthItemModel
     {
         return [
             [['name', 'description', 'rule_name', 'data'], 'safe'],
-            [['type', 'created_at', 'updated_at'], 'integer'],
+            [['created_at', 'updated_at'], 'integer'],
         ];
-    }
-
-    public function permissions($query)
-    {
-        $query->andWhere('type = ' . AuthItem::TYPE_PERMISSION);
     }
 
     public function scenarios()
@@ -32,10 +27,8 @@ class AuthItem extends AuthItemModel
         return Model::scenarios();
     }
 
-    public function search($params)
+    protected function search($params, $query)
     {
-        $query = AuthItemModel::find();
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -45,7 +38,6 @@ class AuthItem extends AuthItemModel
         }
 
         $query->andFilterWhere([
-            'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
@@ -58,4 +50,13 @@ class AuthItem extends AuthItemModel
         return $dataProvider;
     }
 
+    public function searchPermissions($params)
+    {
+        return $this->search($params, AuthItemModel::find()->permissions());
+    }
+
+    public function searchRoles($params)
+    {
+        return $this->search($params, AuthItemModel::find()->roles());
+    }
 }

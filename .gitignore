@@ -42,3 +42,7 @@ phpunit.phar
 /vendor/nikic/
 /vendor/cebe/
 /vendor/autoload.php
+/backend/web/img/upload/
+/backend/web/img/preview/
+/backend/web/img/preview2/
+/backend/web/img/title/

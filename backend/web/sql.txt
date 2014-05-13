@@ -1,0 +1,15 @@
+ALTER TABLE `sia_articles`
+ADD COLUMN `like`  smallint(5) NOT NULL DEFAULT 0 AFTER `video`,
+ADD COLUMN `dislike`  smallint(5) NOT NULL DEFAULT 0 AFTER `like`;
+
+CREATE TABLE `sia_user_news` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) DEFAULT NULL,
+  `user_name` varchar(255) DEFAULT NULL,
+  `user_email` varchar(255) NOT NULL,
+  `user_phone` varchar(20) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `fulltext` mediumtext NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;

@@ -183,14 +183,15 @@ AppAsset::register($this);
                 </div>
                 <!-- END CONTENT HEADER -->
 
-                <div class="body content rows scroll-y">
+                <div class="body content scroll-y rows">
                     <?=
                     Breadcrumbs::widget([
                         'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                        'class' => 'col-xs-12'
                     ])
                     ?>
                     <?= $content ?>
-                    <footer class="footer">
+                    <footer class="footer col-xs-12">
                         <div class="container">
                             <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
                             <p class="pull-right"><?= Yii::powered() ?></p>

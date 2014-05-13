@@ -80,12 +80,13 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $model->roleKeys = [];
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'roles' => AuthItem::find()->where('type = ' . AuthItem::TYPE_ROLE)->select('name, description')->all()
+                'roles' => AuthItem::find()->roles()->select('name, description')->all()
             ]);
         }
     }

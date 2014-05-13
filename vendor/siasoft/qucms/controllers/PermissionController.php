@@ -18,8 +18,8 @@ class PermissionController extends \siasoft\qucms\web\Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AuthItemSearch();
-        $dataProvider = $searchModel->permissions->search(Yii::$app->request->getQueryParams());
+        $searchModel = new AuthItemSearch();        
+        $dataProvider = $searchModel->searchPermissions(Yii::$app->request->getQueryParams());
         $dataProvider->pagination->pageSize = 50;
         return $this->render(false, [
                     'dataProvider' => $dataProvider,
@@ -39,7 +39,7 @@ class PermissionController extends \siasoft\qucms\web\Controller
             $time = time();
             $model->created_at = $time;
             $model->updated_at = $time;
-            $model->type = AuthItem::TYPE_PERMISSION;
+            $model->type = \yii\rbac\Item::TYPE_PERMISSION;
             if ($model->save()) {
                 return $this->redirect(['index']);
             }

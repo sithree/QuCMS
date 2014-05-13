@@ -13,7 +13,7 @@ class RoleController extends \siasoft\qucms\web\Controller
     public function actionIndex()
     {
         $searchModel = new AuthItemSearch();
-        $dataProvider = $searchModel->search(\yii\helpers\ArrayHelper::merge(Yii::$app->request->getQueryParams(), ['AuthItem' => ['type' => AuthItem::TYPE_ROLE]]));
+        $dataProvider = $searchModel->searchRoles(Yii::$app->request->getQueryParams());
         $dataProvider->pagination->pageSize = 50;
         return $this->render(false, [
                     'dataProvider' => $dataProvider,
@@ -28,7 +28,7 @@ class RoleController extends \siasoft\qucms\web\Controller
             $time = time();
             $model->created_at = $time;
             $model->updated_at = $time;
-            $model->type = AuthItem::TYPE_ROLE;
+            $model->type = \yii\rbac\item::TYPE_ROLE;
             if ($model->save()) {
                 $this->updatePermissions($model->name, Yii::$app->request->post()['permission']);
                 return $this->redirect(['index']);
@@ -93,12 +93,11 @@ class RoleController extends \siasoft\qucms\web\Controller
         $query = new \yii\db\Query();
         $subquery = new \yii\db\Query();
         $subquery->select('child, true `on`')->from('auth_item_child')->where("parent = '{$name}'");
-        return $query->select('`name`, `description`, ttt.`on`')->from('auth_item')->join('LEFT JOIN', ['ttt' => $subquery], 'auth_item.name = ttt.child')->where('type = ' . AuthItem::TYPE_PERMISSION)->all();
+        return $query->select('`name`, `description`, ttt.`on`')->from('auth_item')->join('LEFT JOIN', ['ttt' => $subquery], 'auth_item.name = ttt.child')->where('type = ' . \yii\rbac\Item::TYPE_PERMISSION)->all();
     }
 
     protected function findModel($name)
     {
-
         if (($model = AuthItem::findOne($name)) !== null) {
             return $model;
         } else {

@@ -2,6 +2,7 @@
 
 namespace siasoft\qucms\models;
 
+use Yii;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use yii\helpers\Security;
@@ -28,6 +29,9 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
     const ROLE_USER = 10;
+
+    private $_roleKeys;
+    private $_rolesUptated;
 
     /**
      * Creates a new user
@@ -63,14 +67,6 @@ class User extends ActiveRecord implements IdentityInterface
                 ],
             ],
         ];
-    }
-
-    public function getRoleName()
-    {
-        if ($this->auth) {
-            return $this->auth->itemName;
-        }
-        return '';
     }
 
     public function setRoleName()
@@ -213,15 +209,21 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(AuthAssignment::className(), ['user_id' => 'id']);
     }
-    
+
     public function getRoleKeys()
     {
-        return ArrayHelper::getColumn($this->auth, 'item_name');
+        if (!$this->_roleKeys) {
+            $this->_roleKeys = ArrayHelper::getColumn($this->auth, 'item_name');
+        }
+        return $this->_roleKeys;
     }
-    
-    public function setRoleKeys()
+
+    public function setRoleKeys($value)
     {
-        
+        if ($this->roleKeys != $value) {
+            $this->_roleKeys = $value;
+            $this->_rolesUptated = true;
+        }
     }
 
     /**
@@ -242,7 +244,34 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique'],
+            ['roleKeys', 'required']
         ];
+    }
+
+    protected function removeRoles()
+    {
+        Yii::$app->db->createCommand()->delete(AuthAssignment::tableName(), "user_id = {$this->id}")->execute();
+    }
+
+    public function afterSave($insert)
+    {
+        parent::afterSave($insert);
+        if ($this->_rolesUptated) {
+            $this->removeRoles();
+            $rows = [];
+            $time = time();
+            foreach ($this->_roleKeys as $value) {
+                $rows[] = [$value, $this->id, $time];
+            }
+            
+            Yii::$app->db->createCommand()->batchInsert(AuthAssignment::tableName(), ['item_name', 'user_id', 'created_at'], $rows)->execute();
+        }
+    }
+
+    public function afterDeleteDelete()
+    {
+        parent::beforeDelete();
+        $this->removeRoles();
     }
 
 }
