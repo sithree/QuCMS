@@ -17,7 +17,7 @@ $this->registerJsFile('/js/image-uploader.js', ['siasoft\qucms\web\FileUploadAss
         <span class="btn btn-success fileinput-button">
             <i class="fa fa-plus col-l"></i>
             <span>Добавить файл...</span>
-            <input id="fileupload" type="file" name="files[]" data-url="<?= \yii\helpers\Url::toRoute('upload-image') ?>" accept="image/*" multiple data-sections-name="sections1">
+            <input id="fileupload" type="file" name="file" data-url="<?= \yii\helpers\Url::toRoute('upload-image') ?>" accept="image/*" multiple data-sections-name="sections1">
         </span>
         <button id="sendall" class="btn btn-primary col-l">
             <i class="fa fa-upload"></i>

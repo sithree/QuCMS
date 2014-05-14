@@ -85,7 +85,16 @@ class ImageController extends controller
 
     public function actionUploadImage()
     {
-        new \siasoft\qucms\web\UploadHandler();
+        $imageUploader = new \siasoft\qucms\web\UploadHandler([
+            'image_versions' => [],
+            'param_name' => 'file'
+            ], false);
+        $file = $imageUploader->post(false)['file'][0];
+        unset($file->deleteUrl);
+        unset($file->deleteType);
+        $imageUploader->head();
+        return \yii\helpers\Json::encode($file);
+        //echo \yii\helpers\Json::encode($files);
     }
 
     /**

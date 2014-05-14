@@ -48,146 +48,142 @@ $(function() {
 
     var sections = eval($('#fileupload').data('SectionName'));
 
+    //Отправка всех файлов
     $('#sendall').click(function() {
-        var files = [];
         $('#files').children().each(function(index, div) {
-            var _div = $(div);
-            files.push(_div.data().files[_div.data('index')]);
+            var
+                    _div = $(div);
+            if (!_div.data('submited'))
+                _div.data().submit();
         })
-        $('#fileupload').fileupload('send', {files: files});
     })
 
+    //Отображение кнопок
     $('#files').on('mouseenter', '.uploadcontainer', function() {
         $(this).find('.buttons').fadeIn('fast');
     });
 
+    //Скрытие кнопок
     $('#files').on('mouseleave', '.uploadcontainer', function() {
         $(this).find('.buttons').fadeOut('fast');
     });
 
+    //отправка одного файла
     $('#files').on('click', '.upload', function() {
-        var
-                _this = $(this),
-                parent = _this.parents('.uploadcontainer'),
-                data = parent.data();
-        data.formData = {
-            title: parent.find('textarea').val()
-        };
-        $('.progress').fadeIn();
-        data.submit();
-        _this.remove();
+        $(this).parents('.uploadcontainer').data().submit();
     });
 
+    //удаление файла
     $('#files').on('click', '.delete', function() {
-        var
-                container = $(this).parents('.uploadcontainer'),
-                parent = container.parent();
-        parent.data().abort();
-        parent.splice(container.data('index'));
-        if (parent.children().length = 1) {
-            parent.remove();
-        }
-        else {
-            container.remove();
-        }
+        $(this).parents('.uploadcontainer').remove();
     });
 
-    var ImageContainerTemplate = $('<div class="uploadcontainer clearfix"/>')
-            .append(
-                    $('<div class="img-thumbnail"/>'),
-                    $('<div class="summary"/>')
-                    .append($('<textarea class="form-control" name="image[title]"/>')));
+    //Вывоводит уведомления
+    function pushMessage(where, text) {
+        var message = $('<div class="alert alert-danger" style="display: none;"/>');
+        $(where).append(message
+                .append($('<span/>').text(text)).fadeIn(function() {
+            setTimeout(function() {
+                message.fadeOut(function() {
+                    message.remove();
+                });
+            }, 5000);
+        }));
+    }
 
+    //Шаблон контейнера
+    var ImageContainerTemplate = $('<div class="uploadcontainer clearfix"/>')
+            .append($('<div class="img-thumbnail"/>')
+                    .append($('<span class="label label-primary"/>'))
+                    .append($('<div class="buttons"/>')
+                            .append($('<button class="btn btn-danger btn-xs delete"/>')
+                                    .append($('<i class="fa fa-minus"></i>')))
+                            .append($('<button class="btn btn-primary btn-xs upload"/>')
+                                    .append($('<i class="fa fa-upload"></i>')))))
+            .append($('<div class="summary"/>')
+                    .append($('<form/>')
+                            .append($('<div class="form-group"/>')
+                                    .append($('<input class="form-control input-sm" name="title" placeholder="комментарий"/>')))
+                            .append($('<div class="form-group"/>')
+                                    .append($('<input class="form-control input-sm" name="source" placeholder="источник"/>')))
+                            .append($('<div class="form-group"/>')
+                                    .append($('<input class="form-control input-sm" name="url" placeholder="url"/>')))
+                            .append($('<div class="form-group"/>')
+                                    .append($('<input class="form-control input-sm" name="author" placeholder="автор"/>')))
+                            ));
+
+
+    //Инициализация плагина
     $('#fileupload').fileupload({
         dataType: 'json',
-        autoUpload: false,
-        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-        singleFileUploads: false,
+        autoUpload: false, //Отправка только ручками
+        //добавление файлов
     }).on('fileuploadadd', function(e, data) {
-        var item = $('<div/>');
-        data.context = item;
         $.each(data.files, function(index, file) {
+            if (!file.type.length || !(/^image\/(gif|jpe?g|png)$/i).test(file.type)) {
+                pushMessage('#messages', file.name + ': Выбран не верный формат.');
+                return false;
+            }
             var container = ImageContainerTemplate.clone(true);
+            data.context = container;
+            //генерация preview
             loadImage(
                     file,
                     function(img) {
                         var
-                                _img = $(img),
-                                imgContainer = container.find('.img-thumbnail'),
-                                fileName = file.name;
-                        container.find('textarea').height(_img.height() - 12);
-                        imgContainer.append(_img);
-                        if (fileName.length > 9) {
-                            fileName = fileName.substr(0, 5) + '~' + fileName.substr(-4, 4);
-                        }
-                        imgContainer.append($('<span class="label label-primary"/>').text(fileName));
-                        imgContainer.append($('<div class="buttons"/>').append($('<button class="btn btn-danger btn-xs delete"/>')
-                                .append($('<i class="fa fa-minus"></i>')))
-                                .append($('<button class="btn btn-primary btn-xs upload"/>')
-                                        .append($('<i class="fa fa-upload"></i>')))
-                                );
+                                span = container.find('.img-thumbnail span');
+                        $(img).insertBefore(span.text(file.name));
                     },
                     {
-                        maxWidth: 100,
-                        maxHeight: 100
+                        maxWidth: 300,
+                        maxHeight: 255
                     });
-            container.data('index', index);
-            item.append(container);
+            $('#files').append(container.data(data));
         });
-        $('#files').append(item.data(data));
-    }).on('fileuploadprocessalways', function(e, data) {
-        var index = data.index,
-                file = data.files[index],
-                node = $(data.context.children()[index]);
-        if (file.preview) {
-            node
-                    .prepend('<br>')
-                    .prepend(file.preview);
+
+    }).on('fileuploadsubmit', function(e, data) {
+        $('.progress').fadeIn();
+        //Проверка комментария
+        var
+                input = data.context.find('input[name="title"]');
+        if (input.val() === '') {
+            data
+            input.parent().addClass('has-error');
+            pushMessage(data.context.find('.summary'), 'Необходимо заполнить комментарий');
+            return false;
         }
-        if (file.error) {
-            node
-                    .append('<br>')
-                    .append($('<span class=\"text-danger\"/>').text(file.error));
-        }
-        if (index + 1 === data.files.length) {
-            data.context.find('button')
-                    .text('Upload')
-                    .prop('disabled', !!data.files.error);
-        }
+        input.parent().removeClass('has-error');
+        data.context.find('.upload').css('display', 'none');
+        //Отправка дополнительных данных
+        data.formData = data.context.find('form').serializeArray();
+
     }).on('fileuploadprogressall', function(e, data) {
         var progress = parseInt(data.loaded / data.total * 100, 10);
         $('.progress-bar').css(
                 'width',
                 progress + '%'
                 );
+        //при полном прогрессе скрываем progressbar
+        if (progress === 100) {
+            $('.progress').fadeOut(function() {
+                $('.progress-bar').css('width', '0%');
+            });
+        }
+
     }).on('fileuploaddone', function(e, data) {
-        $('.progress').fadeOut(function() {
-            $('.progress-bar').css('width', '0%');
-        });
-        $.each(data.result.files, function(index, file) {
-            if (file.url) {
-                var link = $('<a>')
-                        .attr('target', '_blank')
-                        .prop('href', file.url);
-                $(data.context.children()[index])
-                        .wrap(link);
-            } else if (file.error) {
-                var message = $('<div class="alert alert-danger" style="display: none;"/>');
-                $('#messages').append(message
-                        .append($('<span/>').text(file.name + ': ' + file.error)).fadeIn(function() {
-                    setTimeout(function() {
-                        message.fadeOut(function() {
-                            message.remove();
-                        });
-                    }, 5000);
-                }));
-            }
-        });
+        if (data.result.error) {
+            data.context.find('.upload').css('display', 'inline');
+            pushMessage(data.context.find('.summary'), data.result.name + ': ' + data.result.error);
+        } else {
+            data.context.data('submited', true);
+        }
+
     }).on('fileuploadfail', function(e, data) {
         $.each(data.files, function(index, file) {
-            $(data.context).append($('<div class="alert alert-danger"/>')
-                    .append('<span/>').text('Не удалось отправить файл - ' + file.Name));
+            data.context.find('.upload').css('display', 'inline');
+            pushMessage(data.context.find('.summary'), file.name + ': ' + file.error);
         });
+
     }).prop('disabled', !$.support.fileInput)
             .parent().addClass($.support.fileInput ? undefined : 'disabled');
 });

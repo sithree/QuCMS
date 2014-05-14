@@ -2703,6 +2703,7 @@ body, html {
 .fileupload-container .progress {
     height: 10px;
     margin-bottom: 0px;
+    display: none;
 }
 
 .uploadcontainer {
@@ -2713,13 +2714,14 @@ body, html {
 .uploadcontainer .img-thumbnail{
     display: inline-block;
     float:left;
+    width: 310px;
+    height: 235px;
+    margin-right: 5px;
     position: relative;
 }
 
-.uploadcontainer textArea {
-    resize: none;
-    height: auto;
-    margin: 0;
+.uploadcontainer input {
+    margin: 0 0 5px 0;
 }
 
 .uploadcontainer .img-thumbnail span{
@@ -2743,6 +2745,11 @@ body, html {
 .uploadcontainer .buttons button {
     margin-left: 5px;
     margin-bottom: 5px;
+}
+
+.uploadcontainer .alert {
+    padding: 10px;
+    margin: 0;
 }
 
 .files {

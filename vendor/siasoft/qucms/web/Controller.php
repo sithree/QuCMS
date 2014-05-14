@@ -31,13 +31,13 @@ class Controller extends \yii\web\Controller
         if ($view === false) {
             $view = $this->action->id;
         }
-        if (\Yii::$app->request->isAjax) {
+        if (\Yii::$app->request->isAjax && \Yii::$app->request->isGet) {
             $this->layout = '/ajax.php';
         }
 
 
         $result = parent::render($view, $params);
-        if (\Yii::$app->request->isAjax) {
+        if (\Yii::$app->request->isAjax && \Yii::$app->request->isGet) {
             $debug = \Yii::$app->modules['debug'];
             $result = json_encode([
                 'status' => 200,

@@ -20,7 +20,7 @@ class Image extends Component
      * @var ImageInfo
      */
     private $info;
-    
+
     /**
      * Return path by section name
      * @param string $section Section name
@@ -38,28 +38,33 @@ class Image extends Component
      * @return \siasoft\qucms\web\Image
      * @throws \Exception
      */
-    public static function Upload($model = false, $attributes = [])
+    public static function Upload()
     {
-        $info = null;
-        $file = UploadedFile::getInstance($model, ArrayHelper::getValue($attributes, 'file', 'name'));
-        $model->{ArrayHelper::getValue($attributes, 'file', 'name')} = $file->baseName;
-        if ($model instanceof ImageInfo) {
-            $info = $model;
-        } else {
-            $info = new ImageInfo();
-            $info->name = $model->{ArrayHelper::getValue($attributes, 'name', 'name')};
-            $info->title = $model->{ArrayHelper::getValue($attributes, 'title', 'title')};
-        }
-        $info->size = $file->size;
-        if (!$info->save()) {
-            throw new \Exception('Ошибка добавления изображения');
-        }
+        $dir = $this->getPath();
+        $imageUploader = new \siasoft\qucms\web\UploadHandler([
+            'image_versions' => [],
+            'param_name' => 'file'
+                ], false);
+        $file = $imageUploader->post(false)['file'][0];
+        unset($file->deleteUrl);
+        unset($file->deleteType);
+
+        $info = new ImageInfo();
+        $info->name = $file['name'];
+        $info->title = \Yii::$app->getRequest()->post('title');
+        $info->size = $file['size'];
+
         $filename = self::getPath() . "\\{$info->id}.jpg";
-        $file->saveAs($filename);
         $arr = getimagesize($filename);
         $info->width = $arr[0];
         $info->height = $arr[1];
         $info->original = $info->id;
+
+        if (!$info->save()) {
+            throw new \Exception('Ошибка добавления изображения');
+        }
+
+
         $info->save();
 
         $image = new Image();
@@ -82,6 +87,6 @@ class Image extends Component
     public function generateImage($section)
     {
         $section = ImageSection::find()->where("name = '{$section}'");
-                
     }
+
 }
