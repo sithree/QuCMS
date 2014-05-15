@@ -19,6 +19,7 @@ class FileUploadAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/siasoft/qucms/assets';
     public $js = [
+        'jquery-ui-1.10.4.custom.min.js',
         'jquery.ui.widget.js',
         'load-image.min.js',
         'canvas-to-blob.min.js',

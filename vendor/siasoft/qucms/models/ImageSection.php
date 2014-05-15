@@ -29,7 +29,7 @@ class ImageSection extends \yii\db\ActiveRecord
         return [
             [['width', 'height'], 'default', 'value' => 0],
             ['quality', 'default', 'value' => 75],
-            [['name', 'path'], 'required'],
+            [['name', 'path', 'url'], 'required'],
             [['name'], 'string', 'max' => 64],
             [['path'], 'string', 'max' => 512],
             [['width', 'height', 'crop_to_max', 'crop_to_width', 'crop_to_height', 'quality', 'for_retina'], 'integer']

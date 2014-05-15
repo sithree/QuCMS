@@ -32,9 +32,9 @@ class ImageInfo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['width', 'height', 'size', 'original'], 'default', 'value' => 0],
-            [['section', 'original', 'width', 'height', 'size'], 'integer'],
-            [['original', 'title', 'name', 'width', 'height', 'size'], 'required'],
+            [['width', 'height', 'size'], 'default', 'value' => 0],
+            [['section', 'width', 'height', 'size'], 'integer'],
+            [['title', 'name', 'width', 'height', 'size'], 'required'],
             [['title', 'name'], 'string', 'max' => 255]
         ];
     }
@@ -47,7 +47,6 @@ class ImageInfo extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'section' => 'Section',
-            'original' => 'Original',
             'title' => 'Title',
             'name' => 'Name',
             'width' => 'Width',

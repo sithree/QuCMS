@@ -78,6 +78,13 @@ $(function() {
         $(this).parents('.uploadcontainer').remove();
     });
 
+    $("#files").sortable({
+        opacity: 0.6,
+        cursor: 'move',
+        handle: "img",
+        axis: 'y'
+    });
+
     //Вывоводит уведомления
     function pushMessage(where, text) {
         var message = $('<div class="alert alert-danger" style="display: none;"/>');
@@ -103,21 +110,21 @@ $(function() {
             .append($('<div class="summary"/>')
                     .append($('<form/>')
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="title" placeholder="комментарий"/>')))
+                                    .append($('<input class="form-control input-sm" name="File[title]" placeholder="комментарий"/>')))
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="source" placeholder="источник"/>')))
+                                    .append($('<input class="form-control input-sm" name="File[source]" placeholder="источник"/>')))
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="url" placeholder="url"/>')))
+                                    .append($('<input class="form-control input-sm" name="File[url]" placeholder="url"/>')))
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="author" placeholder="автор"/>')))
+                                    .append($('<input class="form-control input-sm" name="File[author]" placeholder="автор"/>')))
                             ));
 
 
     //Инициализация плагина
     $('#fileupload').fileupload({
         dataType: 'json',
-        autoUpload: false, //Отправка только ручками
-        //добавление файлов
+        autoUpload: false //Отправка только ручками
+                //добавление файлов
     }).on('fileuploadadd', function(e, data) {
         $.each(data.files, function(index, file) {
             if (!file.type.length || !(/^image\/(gif|jpe?g|png)$/i).test(file.type)) {
@@ -139,19 +146,21 @@ $(function() {
                         maxHeight: 255
                     });
             $('#files').append(container.data(data));
+            $('#files').sortable('refresh');
         });
 
     }).on('fileuploadsubmit', function(e, data) {
-        $('.progress').fadeIn();
         //Проверка комментария
         var
-                input = data.context.find('input[name="title"]');
+                input = data.context.find('input[name="File[title]"]');
         if (input.val() === '') {
             data
             input.parent().addClass('has-error');
             pushMessage(data.context.find('.summary'), 'Необходимо заполнить комментарий');
             return false;
         }
+        $('.progress').fadeIn();
+        
         input.parent().removeClass('has-error');
         data.context.find('.upload').css('display', 'none');
         //Отправка дополнительных данных
