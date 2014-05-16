@@ -36,6 +36,8 @@ class ImageController extends controller
     {
         $searchModel = new ImageInfoSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
+        //\yii\helpers\VarDumper::dump(\siasoft\qucms\models\ImageSource::find()->all(), 10, true);
+        //die();
 
         return $this->render('index', [
                     'dataProvider' => $dataProvider,

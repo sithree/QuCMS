@@ -11,13 +11,13 @@ use Yii;
  * @property integer $section
  * @property integer $original
  * @property string $title
- * @property string $name
  * @property integer $width
  * @property integer $height
  * @property integer $size
  */
 class ImageInfo extends \yii\db\ActiveRecord
 {
+
     /**
      * @inheritdoc
      */
@@ -34,8 +34,8 @@ class ImageInfo extends \yii\db\ActiveRecord
         return [
             [['width', 'height', 'size'], 'default', 'value' => 0],
             [['section', 'width', 'height', 'size'], 'integer'],
-            [['title', 'name', 'width', 'height', 'size'], 'required'],
-            [['title', 'name'], 'string', 'max' => 255]
+            [['title', 'width', 'height', 'size'], 'required'],
+            [['title'], 'string', 'max' => 255]
         ];
     }
 
@@ -48,11 +48,15 @@ class ImageInfo extends \yii\db\ActiveRecord
             'id' => 'ID',
             'section' => 'Section',
             'title' => 'Title',
-            'name' => 'Name',
             'width' => 'Width',
             'height' => 'Height',
             'size' => 'Size',
         ];
+    }
+
+    public function getSource()
+    {
+        return $this->hasOne(ImageSource::className(), ['image_id' => 'id']);
     }
 
 }

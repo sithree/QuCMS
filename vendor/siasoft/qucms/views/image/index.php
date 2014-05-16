@@ -8,7 +8,6 @@ use yii\grid\GridView;
  * @var yii\data\ActiveDataProvider $dataProvider
  * @var siasoft\qucms\models\search\ImageInfo $searchModel
  */
-
 $this->title = 'Image Infos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,28 +15,36 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?=
+    siasoft\qucms\widgets\Filter::widget([
+        'searchModel' => $searchModel,
+        'dataProvider' => $dataProvider
+    ])
+    ?>
 
     <p>
         <?= Html::a('Create Image Info', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?= GridView::widget([
+    <?=
+    GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'section',
             'title',
-            'name',
-            // 'width',
-            // 'height',
-            // 'size',
-
+            'source.name',
+            'source.source',
+            'source.url',
+            'source.author',
+            'width',
+            'height',
+            'size',
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);
+    ?>
 
 </div>

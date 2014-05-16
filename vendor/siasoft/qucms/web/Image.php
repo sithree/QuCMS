@@ -5,12 +5,13 @@ namespace siasoft\qucms\web;
 use Yii;
 use yii\base\Component;
 use siasoft\qucms\models\ImageInfo;
+use siasoft\qucms\models\ImageSource;
+use siasoft\qucms\models\ImageSection;
 use siasoft\qucms\web\UploadHandler;
-use \siasoft\qucms\models\ImageSection;
 
 /**
  * Manage image collection
- *
+ * @property ImageSection section image params
  * @author SW-PC1
  */
 class Image extends Component
@@ -20,8 +21,18 @@ class Image extends Component
      * @var ImageInfo
      */
     private $_info;
+    /**
+     * image params
+     * @var ImageSection
+     */
     private $_section;
 
+    /**
+     * Load image from file
+     * @param String $filename
+     * @return Resource resource an image resource identifier on success
+     * @throws InvalidArgumentException
+     */
     private function imagecreatefromfile($filename)
     {
         if (!file_exists($filename)) {
@@ -46,9 +57,7 @@ class Image extends Component
     }
 
     /**
-     * upload image to server
-     * @param \yii\base\Model $model Model contain data
-     * @param Array $attributes names of fields
+     * Upload image to server
      * @return \siasoft\qucms\web\Image
      * @throws \Exception
      */
@@ -107,8 +116,9 @@ class Image extends Component
 
     public static function getSection()
     {
-        if (!$this->_section)
+        if (!$this->_section) {
             $this->_section = ImageSection::find()->where("id = {$this->_info->id}")->one();
+        }
         return $this->_section;
     }
 
@@ -116,7 +126,7 @@ class Image extends Component
     {
         $section = self::getSection($section);
         $new = imagecreatetruecolor($section->width, $section->height);
-        $source = imagecreatefromgd();
+        $source = $this->imagecreatefromfile($filename);
     }
 
 }
