@@ -6,14 +6,14 @@ use Yii;
 use siasoft\qucms\models\ImageInfo;
 use \siasoft\qucms\models\ImageSection;
 use siasoft\qucms\models\search\ImageInfo as ImageInfoSearch;
-use siasoft\qucms\web\controller;
+use siasoft\qucms\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * ImageController implements the CRUD actions for ImageInfo model.
  */
-class ImageController extends controller
+class ImageController extends Controller
 {
 
     public function behaviors()
