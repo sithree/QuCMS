@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'section',
-            'original',
             'title',
             'name',
             'width',

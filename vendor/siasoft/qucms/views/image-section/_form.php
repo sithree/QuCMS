@@ -18,6 +18,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'path')->textInput(['maxlength' => 512]) ?>
     
+    <?= $form->field($model, 'url')->textInput(['maxlength' => 512]) ?>
+    
     <?= $form->field($model, 'height')->textInput() ?>
     
     <?= $form->field($model, 'width')->textInput() ?>
