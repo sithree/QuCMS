@@ -5,14 +5,14 @@ namespace siasoft\qucms\controllers;
 use Yii;
 use siasoft\qucms\models\ImageSection;
 use siasoft\qucms\models\search\ImageSection as ImageSectionSearch;
-use siasoft\qucms\web\controller;
+use siasoft\qucms\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * imageSectionController implements the CRUD actions for ImageSection model.
  */
-class ImageSectionController extends controller
+class ImageSectionController extends Controller
 {
     public function behaviors()
     {

@@ -46,11 +46,11 @@ class ImageInfo extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'section' => 'Section',
-            'title' => 'Title',
-            'width' => 'Width',
-            'height' => 'Height',
-            'size' => 'Size',
+            'section' => 'Раздел',
+            'title' => 'Заголовок',
+            'width' => 'Ширина',
+            'height' => 'Высота',
+            'size' => 'Размер'
         ];
     }
 

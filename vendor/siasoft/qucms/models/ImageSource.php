@@ -44,7 +44,7 @@ class ImageSource extends \yii\db\ActiveRecord
         return [
             'image_id' => 'Image ID',
             'name' => 'Имя',
-            'source_name' => 'Имя источника',
+            'source' => 'Имя источника',
             'url' => 'Url',
             'author' => 'Автор',
         ];

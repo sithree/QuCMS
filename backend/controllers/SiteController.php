@@ -6,19 +6,23 @@ use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use common\models\LoginForm;
+use backend\models\SignupForm;
 
-class SiteController extends \siasoft\qucms\web\Controller
-{
+class SiteController extends \siasoft\qucms\web\Controller {
 
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::className(),
                 'rules' => [
+                    [
+                        'actions' => ['signup'],
+                        'allow' => true,
+                        'roles' => ['?'],
+                    ],
                     [
                         'actions' => ['login', 'error'],
                         'allow' => true,
@@ -39,16 +43,14 @@ class SiteController extends \siasoft\qucms\web\Controller
         ];
     }
 
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $this->redirect(\Yii::$app->urlManager->createUrl(['qucms']));
     }
 
     /**
      * @inheritdoc
      */
-    public function actions()
-    {
+    public function actions() {
         return [
             'error' => [
                 'class' => 'siasoft\qucms\web\ErrorAction',
@@ -56,8 +58,7 @@ class SiteController extends \siasoft\qucms\web\Controller
         ];
     }
 
-    public function actionLogin()
-    {
+    public function actionLogin() {
         if (!\Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -73,11 +74,27 @@ class SiteController extends \siasoft\qucms\web\Controller
         }
     }
 
-    public function actionLogout()
-    {
+    public function actionLogout() {
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionSignup() {
+        $model = new SignupForm();
+        if ($model->load(Yii::$app->request->post())) {
+            $user = $model->signup();
+            if ($user) {
+                if (Yii::$app->getUser()->login($user)) {
+                    return $this->goHome();
+                }
+            }
+        }
+
+        $this->layout = 'simple';
+        return $this->render('signup', [
+                    'model' => $model,
+        ]);
     }
 
 }

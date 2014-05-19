@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-/**
- * @var yii\web\View $this
- * @var yii\data\ActiveDataProvider $dataProvider
- * @var siasoft\qucms\models\search\ImageInfo $searchModel
- */
+/* @var $this yii\web\View */
+/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $searchModel siasoft\qucms\models\search\ImageInfo */
+
 $this->title = 'Image Infos';
 $this->params['breadcrumbs'][] = $this->title;
+$this->registerJsFile('/js/filter.js', ['yii\web\JqueryAsset', 'siasoft\qucms\web\FileUploadAsset']);
 ?>
 <div class="image-info-index">
 
@@ -31,7 +31,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
             'id',
             'section',
             'title',
@@ -42,8 +41,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'width',
             'height',
             'size',
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
+            ['class' => 'yii\grid\ActionColumn']
+        ]
     ]);
     ?>
 

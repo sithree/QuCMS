@@ -24,8 +24,8 @@ use yii\web\IdentityInterface;
  * @property integer $updated_at
  * @property string $password write-only password
  */
-class User extends ActiveRecord implements IdentityInterface
-{
+class User extends ActiveRecord implements IdentityInterface {
+
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
     const ROLE_USER = 10;
@@ -39,8 +39,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param  array       $attributes the attributes given by field => value
      * @return static|null the newly created model, or null on failure
      */
-    public static function create($attributes)
-    {
+    public static function create($attributes) {
         /** @var User $user */
         $user = new static();
         $user->setAttributes($attributes);
@@ -49,6 +48,8 @@ class User extends ActiveRecord implements IdentityInterface
         if ($user->save()) {
             return $user;
         } else {
+            \yii\helpers\VarDumper::dump($user, 10, true);
+            die();
             return null;
         }
     }
@@ -56,8 +57,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'timestamp' => [
                 'class' => 'yii\behaviors\TimestampBehavior',
@@ -69,24 +69,21 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function setRoleName()
-    {
+    public function setRoleName() {
         
     }
 
     /**
      * @inheritdoc
      */
-    public static function findIdentity($id)
-    {
+    public static function findIdentity($id) {
         return static::findOne($id);
     }
 
     /**
      * @inheritdoc
      */
-    public static function findIdentityByAccessToken($token)
-    {
+    public static function findIdentityByAccessToken($token) {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
@@ -96,8 +93,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param  string      $username
      * @return static|null
      */
-    public static function findByUsername($username)
-    {
+    public static function findByUsername($username) {
         return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
     }
 
@@ -107,8 +103,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param  string      $token password reset token
      * @return static|null
      */
-    public static function findByPasswordResetToken($token)
-    {
+    public static function findByPasswordResetToken($token) {
         $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
         $parts = explode('_', $token);
         $timestamp = (int) end($parts);
@@ -126,24 +121,21 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->getPrimaryKey();
     }
 
     /**
      * @inheritdoc
      */
-    public function getAuthKey()
-    {
+    public function getAuthKey() {
         return $this->auth_key;
     }
 
     /**
      * @inheritdoc
      */
-    public function validateAuthKey($authKey)
-    {
+    public function validateAuthKey($authKey) {
         return $this->getAuthKey() === $authKey;
     }
 
@@ -153,8 +145,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param  string  $password password to validate
      * @return boolean if password provided is valid for current user
      */
-    public function validatePassword($password)
-    {
+    public function validatePassword($password) {
         return Security::validatePassword($password, $this->password_hash);
     }
 
@@ -163,37 +154,32 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @param string $password
      */
-    public function setPassword($password)
-    {
+    public function setPassword($password) {
         $this->password_hash = Security::generatePasswordHash($password);
     }
 
     /**
      * Generates "remember me" authentication key
      */
-    public function generateAuthKey()
-    {
+    public function generateAuthKey() {
         $this->auth_key = Security::generateRandomKey();
     }
 
     /**
      * Generates new password reset token
      */
-    public function generatePasswordResetToken()
-    {
+    public function generatePasswordResetToken() {
         $this->password_reset_token = Security::generateRandomKey() . '_' . time();
     }
 
     /**
      * Removes password reset token
      */
-    public function removePasswordResetToken()
-    {
+    public function removePasswordResetToken() {
         $this->password_reset_token = null;
     }
 
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'username' => 'логин',
             'email' => 'E-mail',
@@ -205,32 +191,28 @@ class User extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public function getAuth()
-    {
-        return $this->hasMany(AuthAssignment::className(), ['user_id' => 'id']);
-    }
+    //public function getAuth() {
+        //return $this->hasMany(AuthAssignment::className(), ['user_id' => 'id']);
+    //}
 
-    public function getRoleKeys()
-    {
-        if (!$this->_roleKeys) {
-            $this->_roleKeys = ArrayHelper::getColumn($this->auth, 'item_name');
-        }
-        return $this->_roleKeys;
-    }
+    //public function getRoleKeys() {
+        //if (!$this->_roleKeys) {
+            //$this->_roleKeys = ArrayHelper::getColumn($this->auth, 'item_name');
+        //}
+        //return $this->_roleKeys;
+    //}
 
-    public function setRoleKeys($value)
-    {
-        if ($this->roleKeys != $value) {
-            $this->_roleKeys = $value;
-            $this->_rolesUptated = true;
-        }
-    }
+    //public function setRoleKeys($value) {
+        //if ($this->roleKeys != $value) {
+            //$this->_roleKeys = $value;
+            //$this->_rolesUptated = true;
+        //}
+    //}
 
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
@@ -244,17 +226,15 @@ class User extends ActiveRecord implements IdentityInterface
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique'],
-            ['roleKeys', 'required']
+            //['roleKeys', 'required']
         ];
     }
 
-    protected function removeRoles()
-    {
+    protected function removeRoles() {
         Yii::$app->db->createCommand()->delete(AuthAssignment::tableName(), "user_id = {$this->id}")->execute();
     }
 
-    public function afterSave($insert)
-    {
+    public function afterSave($insert) {
         parent::afterSave($insert);
         if ($this->_rolesUptated) {
             $this->removeRoles();
@@ -263,13 +243,12 @@ class User extends ActiveRecord implements IdentityInterface
             foreach ($this->_roleKeys as $value) {
                 $rows[] = [$value, $this->id, $time];
             }
-            
+
             Yii::$app->db->createCommand()->batchInsert(AuthAssignment::tableName(), ['item_name', 'user_id', 'created_at'], $rows)->execute();
         }
     }
 
-    public function afterDeleteDelete()
-    {
+    public function afterDeleteDelete() {
         parent::beforeDelete();
         $this->removeRoles();
     }
