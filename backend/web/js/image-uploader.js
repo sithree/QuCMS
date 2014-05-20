@@ -46,43 +46,49 @@ $(function() {
 //        $('#files-test').append(container);
 //    });
 
-    var sections = eval($('#fileupload').data('SectionName'));
+    //svar sections = eval($('#fileupload').data('SectionName'));
 
     //Отправка всех файлов
-    $('#sendall').click(function() {
-        $('#files').children().each(function(index, div) {
+    $('.sendall').click(function() {
+        $(this).parents('.fileupload-widget').find('.uploadcontainer').each(function(index, div) {
             var
                     _div = $(div);
             if (!_div.data('submited'))
                 _div.data().submit();
-        })
-    })
+            return false;
+        });
+    });
 
     //Отображение кнопок
-    $('#files').on('mouseenter', '.uploadcontainer', function() {
+    $('.files').on('mouseenter', '.uploadcontainer', function() {
         $(this).find('.buttons').fadeIn('fast');
     });
 
     //Скрытие кнопок
-    $('#files').on('mouseleave', '.uploadcontainer', function() {
+    $('.files').on('mouseleave', '.uploadcontainer', function() {
         $(this).find('.buttons').fadeOut('fast');
     });
 
     //отправка одного файла
-    $('#files').on('click', '.upload', function() {
+    $('.files').on('click', '.upload', function() {
         $(this).parents('.uploadcontainer').data().submit();
     });
 
     //удаление файла
-    $('#files').on('click', '.delete', function() {
+    $('.files').on('click', '.delete', function() {
         $(this).parents('.uploadcontainer').remove();
     });
 
-    $("#files").sortable({
-        opacity: 0.6,
-        cursor: 'move',
-        handle: "img",
-        axis: 'y'
+    $('.fileupload-widget').each(function(index, element) {
+        var _element = $(element);
+        if (_element.find('.fileupload').attr('multiple') === 'multiple') {
+            _element.find('.files').sortable({
+                opacity: 0.6,
+                cursor: 'move',
+                handle: "img",
+                axis: 'y'
+            });
+        }
     });
 
     //Вывоводит уведомления
@@ -110,25 +116,45 @@ $(function() {
             .append($('<div class="summary"/>')
                     .append($('<form/>')
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="File[title]" placeholder="комментарий"/>')))
+                                    .append($('<input class="form-control input-sm" name="ImageInfo[title]" placeholder="комментарий"/>')))
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="File[source]" placeholder="источник"/>')))
+                                    .append($('<input class="form-control input-sm" name="ImageSource[source]" placeholder="источник"/>')))
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="File[url]" placeholder="url"/>')))
+                                    .append($('<input class="form-control input-sm" name="ImageSource[url]" placeholder="url"/>')))
                             .append($('<div class="form-group"/>')
-                                    .append($('<input class="form-control input-sm" name="File[author]" placeholder="автор"/>')))
+                                    .append($('<input class="form-control input-sm" name="ImageSource[author]" placeholder="автор"/>')))
                             ));
 
+    $('.fileupload-widget').each(function(index, div) {
+        var
+                _div = $(div),
+                _form = $(_div.data('formselector')),
+                //containerName = _div.data('model') + '-' + _div.data('behavior');
+                container = $('<div/>').attr('id', _div.data('model') + '-' + _div.data('behavior'));
+        //_div.data('containerName', containerName);
+        _form.append(container);
+        _form.submit(function() {
+            _div.find('.uploadcontainer').each(function(index, image) {
+                container.append($('<input/>')
+                        //.attr('hidden', 'hidden')
+                        .attr('name', _div.data('model') + '[' + _div.data('behavior') + '][]').val($(image).data().files[0].name));
+            });
+            //return false;
+        });
+    });
 
     //Инициализация плагина
-    $('#fileupload').fileupload({
+    $('.fileupload').fileupload({
         dataType: 'json',
         autoUpload: false //Отправка только ручками
                 //добавление файлов
     }).on('fileuploadadd', function(e, data) {
+        var
+                _this = $(this),
+                _container = _this.parents('.fileupload-widget');
         $.each(data.files, function(index, file) {
             if (!file.type.length || !(/^image\/(gif|jpe?g|png)$/i).test(file.type)) {
-                pushMessage('#messages', file.name + ': Выбран не верный формат.');
+                pushMessage(_container.find('.messages'), file.name + ': Выбран не верный формат.');
                 return false;
             }
             var container = ImageContainerTemplate.clone(true);
@@ -145,37 +171,43 @@ $(function() {
                         maxWidth: 300,
                         maxHeight: 255
                     });
-            $('#files').append(container.data(data));
-            $('#files').sortable('refresh');
+            if (_this.attr('multiple') !== 'multiple') {
+                _container.find('.uploadcontainer').remove();
+            }
+            _container.find('.files').append(container.data(data));
+            if (_this.attr('multiple') === 'multiple') {
+                _container.find('.files').sortable('refresh');
+            }
         });
 
     }).on('fileuploadsubmit', function(e, data) {
         //Проверка комментария
         var
-                input = data.context.find('input[name="File[title]"]');
+                input = data.context.find('input[name="ImageInfo[title]"]');
         if (input.val() === '') {
-            data
             input.parent().addClass('has-error');
             pushMessage(data.context.find('.summary'), 'Необходимо заполнить комментарий');
             return false;
         }
-        $('.progress').fadeIn();
-        
+        $(this).parents('.fileupload-widget').find('.progress').fadeIn();
+
         input.parent().removeClass('has-error');
         data.context.find('.upload').css('display', 'none');
         //Отправка дополнительных данных
         data.formData = data.context.find('form').serializeArray();
 
     }).on('fileuploadprogressall', function(e, data) {
-        var progress = parseInt(data.loaded / data.total * 100, 10);
-        $('.progress-bar').css(
+        var
+                progress = parseInt(data.loaded / data.total * 100, 10),
+                _container = $(this).parents('.fileupload-widget');
+        _container.find('.progress-bar').css(
                 'width',
                 progress + '%'
                 );
         //при полном прогрессе скрываем progressbar
         if (progress === 100) {
-            $('.progress').fadeOut(function() {
-                $('.progress-bar').css('width', '0%');
+            _container.find('.progress').fadeOut(function() {
+                _container.find('.progress-bar').css('width', '0%');
             });
         }
 
@@ -195,4 +227,8 @@ $(function() {
 
     }).prop('disabled', !$.support.fileInput)
             .parent().addClass($.support.fileInput ? undefined : 'disabled');
+    $('.fileupload').each(function(index, element) {
+        var _fileUpload = $(element);
+        _fileUpload.fileupload('option', 'dropZone', _fileUpload.parents('.fileupload-widget'));
+    });
 });

@@ -36,9 +36,6 @@ class ImageController extends Controller
     {
         $searchModel = new ImageInfoSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
-        //\yii\helpers\VarDumper::dump(\siasoft\qucms\models\ImageSource::find()->all(), 10, true);
-        //die();
-
         return $this->render('index', [
                     'dataProvider' => $dataProvider,
                     'searchModel' => $searchModel,
@@ -81,31 +78,16 @@ class ImageController extends Controller
     public function actionUpload()
     {
         return $this->render(false, [
-                    'sections' => ImageSection::find()->all()
+                    'model' => new \siasoft\qucms\models\FakeImageModel()
         ]);
     }
 
     public function actionUploadImage()
     {
-        try {
-            $image = \siasoft\qucms\web\Image::Upload();
-        } catch (\Exception $ex) {
-            return json_encode([
-                'error' => $ex->getMessage()
-            ]);
-        }
-
-        return \yii\helpers\Json::encode($image);
-        //$imageUploader = new \siasoft\qucms\web\UploadHandler([
-        //'image_versions' => [],
-        //'param_name' => 'file'
-        //], false);
-        //$file = $imageUploader->post(false)['file'][0];
-        //unset($file->deleteUrl);
-        //unset($file->deleteType);
-        //$imageUploader->head();
-        //return \yii\helpers\Json::encode($file);
-        //echo \yii\helpers\Json::encode($files);
+        $fake = new \siasoft\qucms\models\FakeImageModel();
+        $fake->save();
+        list($result, $image) = \siasoft\qucms\web\Image::Upload();
+        return \yii\helpers\Json::encode($result);
     }
 
     /**

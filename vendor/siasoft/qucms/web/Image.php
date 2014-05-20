@@ -63,11 +63,21 @@ class Image extends Component
      */
     public static function Upload()
     {
-        $data = new \siasoft\qucms\models\File();
-        $data->load(Yii::$app->request->post());
-        if (!$data->validate()) {
-            throw new \Exception($data->errors['title'][0]);
+        $info = new ImageInfo();
+        $result = [];
+        $info->load(Yii::$app->request->post());
+        if (!$info->validate()) {
+            $result['error'] = $info->errors;
+            return [$result, null];
         }
+
+        $source = new ImageSource();
+        $source->load(Yii::$app->request->post());
+        if (!$source->validate()) {
+            $result['error'] = $source->errors;
+            return [$result, null];
+        }
+
         $section = self::getSectionByName();
         $imageUploader = new UploadHandler([
             'image_versions' => [],
@@ -75,31 +85,32 @@ class Image extends Component
             'upload_dir' => $section->path,
             'upload_url' => $section->url
                 ], false);
-        $file = $imageUploader->post(false)['file'][0];
-        unset($file->deleteUrl);
-        unset($file->deleteType);
+        list($file) = $imageUploader->post(false)['file'];
 
-        $info = new ImageInfo();
-        $info->name = $file->name;
-        $info->title = $data->title;
         $info->size = $file->size;
         $info->section = $section->id;
 
         $filename = $section->path . $file->name;
         list($info->width, $info->height) = getimagesize($filename);
 
-        if (!$info->save()) {
-            throw new \Exception('Ошибка добавления изображения');
-        }
+        $info->save();
+
+        $source->image_id = $info->id;
+        $source->name = $file->name;
+        $source->save();
+
         $file->name = $info->id . '.' . pathinfo($filename, PATHINFO_EXTENSION);
         rename($filename, $section->path . $file->name);
 
-        $file->url = str_replace(pathinfo($filename, PATHINFO_FILENAME), $info->id, $file->url);
+        $result['name'] = $file->name;
+        $result['url'] = str_replace(pathinfo($filename, PATHINFO_FILENAME), $info->id, $file->url);
 
         $image = new Image();
         $image->_info = $info;
         $image->_section = $section;
-        return $image;
+        
+        $result['success'] = true;
+        return [$result, $image];
     }
 
     public static function getImage($id)
@@ -114,7 +125,7 @@ class Image extends Component
         
     }
 
-    public static function getSection()
+    public function getSection()
     {
         if (!$this->_section) {
             $this->_section = ImageSection::find()->where("id = {$this->_info->id}")->one();

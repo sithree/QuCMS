@@ -31,8 +31,8 @@ class ImageSource extends \yii\db\ActiveRecord
         return [
             [['image_id'], 'required'],
             [['image_id'], 'integer'],
-            [['name', 'source_name', 'author'], 'string', 'max' => 255],
-            [['link'], 'url', 'max' => 512]
+            [['name', 'source', 'author'], 'string', 'max' => 255],
+            [['url'], 'url']
         ];
     }
 
