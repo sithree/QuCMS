@@ -35,7 +35,9 @@ class FileUploadAsset extends AssetBundle
     ];
     public $depends = [
         'yii\web\JqueryAsset',
-        'yii\bootstrap\BootstrapAsset'
+        'yii\bootstrap\BootstrapAsset',
+        'yii\validators\ValidationAsset',
+        'yii\widgets\ActiveFormAsset'
     ];
 
 }

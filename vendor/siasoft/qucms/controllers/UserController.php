@@ -67,6 +67,7 @@ class UserController extends Controller
         } else {
             return $this->render('create', [
                 'model' => $model,
+                'roles' => AuthItem::find()->roles()->select('name, description')->all()
             ]);
         }
     }

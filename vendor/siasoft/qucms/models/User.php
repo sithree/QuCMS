@@ -108,7 +108,7 @@ class User extends ActiveRecord implements IdentityInterface {
         $parts = explode('_', $token);
         $timestamp = (int) end($parts);
         if ($timestamp + $expire < time()) {
-            // token expired
+// token expired
             return null;
         }
 
@@ -191,23 +191,23 @@ class User extends ActiveRecord implements IdentityInterface {
         ];
     }
 
-    //public function getAuth() {
-        //return $this->hasMany(AuthAssignment::className(), ['user_id' => 'id']);
-    //}
+    public function getAuth() {
+        return $this->hasMany(AuthAssignment::className(), ['user_id' => 'id']);
+    }
 
-    //public function getRoleKeys() {
-        //if (!$this->_roleKeys) {
-            //$this->_roleKeys = ArrayHelper::getColumn($this->auth, 'item_name');
-        //}
-        //return $this->_roleKeys;
-    //}
+    public function getRoleKeys() {
+        if (!$this->_roleKeys) {
+            $this->_roleKeys = ArrayHelper::getColumn($this->auth, 'item_name');
+        }
+        return $this->_roleKeys;
+    }
 
-    //public function setRoleKeys($value) {
-        //if ($this->roleKeys != $value) {
-            //$this->_roleKeys = $value;
-            //$this->_rolesUptated = true;
-        //}
-    //}
+    public function setRoleKeys($value) {
+        if ($this->roleKeys != $value) {
+            $this->_roleKeys = $value;
+            $this->_rolesUptated = true;
+        }
+    }
 
     /**
      * @inheritdoc
@@ -226,7 +226,7 @@ class User extends ActiveRecord implements IdentityInterface {
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'unique'],
-            //['roleKeys', 'required']
+//['roleKeys', 'required']
         ];
     }
 
