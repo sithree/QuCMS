@@ -4,7 +4,7 @@ namespace siasoft\qucms\controllers;
 
 use Yii;
 use siasoft\qucms\models\ImageInfo;
-use \siasoft\qucms\models\ImageSection;
+use siasoft\qucms\models\ImageSection;
 use siasoft\qucms\models\search\ImageInfo as ImageInfoSearch;
 use siasoft\qucms\web\Controller;
 use yii\web\NotFoundHttpException;

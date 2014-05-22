@@ -1,4 +1,41 @@
 'use strict';
+(function($) {  
+    var methods = {
+        init: function(options) {
+            var settings = $.extend({
+                'fileSelector': 'top',
+                'background-color': 'blue'
+            }, options);
+            return this.each(function() {
+                var $this = $(this);
+                $this.find('.image-uploader').fileupload({
+                    dataType: 'json',
+                    autoUpload: false //Отправка только ручками
+                }).on('fileuploadadd.imageUploader', addImage);
+            });
+        },
+        destroy: function() {
+            return this;
+        }
+    };
+    
+    $.fn.imageUploader = function(method) {
+        if (methods[method]) {
+            return methods[ method ].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === 'object' || !method) {
+            return methods.init.apply(this, arguments);
+        } else {
+            $.error('Метод с именем ' + method + ' не существует для jQuery.imageUploader');
+        }
+    };
+
+    var addImage = function(e, data) {
+        $(this).parent('')
+    };
+}
+)(jQuery);
+
+
 $(function() {
 //    var showPreview = function(coords)
 //    {
@@ -58,14 +95,7 @@ $(function() {
             return false;
         });
     });
-    //Отображение кнопок
-    $('.files').on('mouseenter', '.uploadcontainer', function() {
-        $(this).find('.buttons').fadeIn('fast');
-    });
-    //Скрытие кнопок
-    $('.files').on('mouseleave', '.uploadcontainer', function() {
-        $(this).find('.buttons').fadeOut('fast');
-    });
+
     //отправка одного файла
     $('.files').on('click', '.upload', function() {
         $(this).parents('.fileupload-widget').find('form').yiiActiveForm('submitForm');
@@ -218,6 +248,7 @@ $(function() {
             return false;
         });
     });
+
     //Инициализация плагина
     $('.fileupload').fileupload({
         dataType: 'json',
@@ -262,7 +293,7 @@ $(function() {
             }
         });
     }).on('fileuploadsubmit', function(e, data) {
-        
+
         if (!$(this).parents('.fileupload-widget').find('form').yiiActiveForm('data').validated) {
             return false;
         }

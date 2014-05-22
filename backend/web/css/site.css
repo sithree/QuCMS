@@ -107,66 +107,6 @@ blockquote.reply-message{
     margin: 0;
 }
 
-/** Progress bar **/
-.progress-bar {
-    -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0);
-    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0);
-}
-.progress.progress-xs {
-    height: 5px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-    border-radius: 0px;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-.progress.progress-xs.for-modal {
-    margin-top: 10px;
-    margin-bottom: 20px;
-}
-.progress.progress-xs .progress-bar {
-    font-size: 11px;
-    line-height: 16px;
-    color: #ffffff;
-    -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0);
-    box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0);
-}
-.progress.progress-xs.progress-striped .progress-bar {background-size: 10px 10px;}
-.progress.progress-sm {
-    height: 10px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    border-radius: 0px;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-}
-.progress.progress-sm.progress-striped .progress-bar {background-size: 15px 15px;}
-
-
-/** Tables **/
-.table > thead > tr > th {
-    vertical-align: middle;
-    border-bottom: 1px solid #dddddd;
-}
-
-/** Form **/
-.form-control{
-    font-size: 13px;
-    border-radius: 0;
-    border-color: #ddd;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0);
-}
-.form-control:focus {
-    border-color: #dadada;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0), 0 0 8px rgba(102, 175, 233, 0);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0), 0 0 8px rgba(102, 175, 233, 0);
-}
-
-/** Button **/
-.btn{border-radius: 2px;}
-
-
 /** List group **/
 .list-group-item:first-child {
     border-top-right-radius: 0px;
@@ -531,30 +471,6 @@ i.danger{color: #E85344}
     color: #E8EAED;
     padding: 15px;
 }
-.footer.rows .progress.progress-xs{
-    margin: 9px 70px 9px 0;
-    overflow: visible;
-    position: relative;
-}
-.footer.rows .progress.progress-xs .progress-precentage{
-    display: block;
-    position: absolute;
-    right: -20px;
-    top: -12px;
-    padding: 7px 5px;
-    border-radius: 50%;
-    background: #212121;
-    color: #8B91A0;
-}
-.footer.rows .progress.progress-xs .btn{
-    display: block;
-    position: absolute;
-    right: -70px;
-    top: -14px;
-    background: #212121;
-    color: #8B91A0;
-    border: none;
-}
 
 /* === RIGHT COLUMN (CONTENT) === */
 .right.content-page{
@@ -762,7 +678,6 @@ footer{
 .box-info.success .additional-btn a.additional-icon{color: #3B934B;}
 .box-info.success .additional-btn a:hover.additional-icon{color: #2C7439;}
 .box-info.success .text-box h3{color: #215F2E}
-.box-info.success .progress-bar-success {background-color: #215F2E;}
 .box-info.success i.success {color: #215F2E;}
 
 .box-info.danger{
@@ -777,7 +692,6 @@ footer{
 .box-info.danger .additional-btn a.additional-icon{color: #791C1A;}
 .box-info.danger .additional-btn a:hover.additional-icon{color: #791C1A;}
 .box-info.danger .text-box h3{color: #791C1A}
-.box-info.danger .progress-bar-danger {background-color: #791C1A;}
 .box-info.danger i.danger {color: #791C1A;}
 
 .box-info.info{
@@ -792,7 +706,6 @@ footer{
 .box-info.info .additional-btn a.additional-icon{color: #15558B;}
 .box-info.info .additional-btn a:hover.additional-icon{color: #15558B;}
 .box-info.info .text-box h3{color: #15558B}
-.box-info.info .progress-bar-info {background-color: #15558B;}
 .box-info.info i.info {color: #15558B;}
 
 .box-info.warning{
@@ -807,7 +720,6 @@ footer{
 .box-info.warning .additional-btn a.additional-icon{color: #9D5D03;}
 .box-info.warning .additional-btn a:hover.additional-icon{color: #9D5D03;}
 .box-info.warning .text-box h3{color: #9D5D03}
-.box-info.warning .progress-bar-warning {background-color: #9D5D03;}
 .box-info.warning i.warning {color: #9D5D03;}
 
 .box-info .additional{
@@ -2689,29 +2601,29 @@ body, html {
     -ms-overflow-style: none !important; 
 }
 
-.fileupload-container>div {
+.image-uploader-container>div {
     float: left; 
     margin-right: 5px;
 }
 
-.fileupload-container>div:last-child {
+.image-uploader-container>div:last-child {
     float: none;
     margin: 0;
     padding: 12px 0 0 0;
 }
 
-.fileupload-container .progress {
+.image-uploader-container .progress {
     height: 10px;
     margin-bottom: 0px;
     display: none;
 }
 
-.uploadcontainer {
+.image-uploader-container {
     margin-bottom: 2px;
     padding: 0;
 }
 
-.uploadcontainer .img-thumbnail{
+.image-item .image-thumb{
     display: inline-block;
     float:left;
     width: 310px;
@@ -2720,34 +2632,45 @@ body, html {
     position: relative;
 }
 
-.uploadcontainer input {
-    margin: 0 0 5px 0;
+.image-item p.help-block {
+    margin: 0;
+    height: 19px;
 }
 
-.uploadcontainer .img-thumbnail span{
+.image-item .control-label {
+    margin-top: 5px;
+    width: 100%;
+    text-align: right;
+}
+
+.image-item .image-thumb span{
     position: absolute;
     right: 0px;
     top: 0px;
 }
 
-.uploadcontainer .summary {
+.image-item .image-summary {
     overflow: hidden;
     padding: 5px 0 0 0;
 }
 
-.uploadcontainer .buttons {
+.image-item .buttons {
     position: absolute;
     left: 0px;
     bottom: 0px;
     display: none;
 }
 
-.uploadcontainer .buttons button {
+.image-item:hover .buttons {
+    display: block;
+}
+
+.image-item .buttons button {
     margin-left: 5px;
     margin-bottom: 5px;
 }
 
-.uploadcontainer .alert {
+.image-item .alert {
     padding: 10px;
     margin: 0;
 }

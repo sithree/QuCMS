@@ -1,6 +1,9 @@
 <?php
 
-use yii\helpers\Json;
+use \yii\helpers\Html;
+use yii\bootstrap\ActiveForm;
+use siasoft\qucms\widgets\Template;
+use siasoft\qucms\widgets\ImageUploader;
 
 /* @var $this yii\web\View */
 /* @var $sections siasoft\qucms\models\ImageSection[] */
@@ -20,51 +23,68 @@ $this->registerJsFile('/js/image-uploader.js', ['siasoft\qucms\web\FileUploadAss
 //    }
 //    echo token_name(array_shift($value)) . ' ' . array_shift($value) . '<br/>';
 //}
-?>
-<?php
-$form = yii\widgets\ActiveForm::begin([
-            'options' => ['id' => 'ModelForm']
-        ]);
-echo \yii\helpers\Html::submitButton();
-yii\widgets\ActiveForm::end();
-?>
 
-<div class="uploadcontainer clearfix">
-    <div class="img-thumbnail">
+$form = ActiveForm::begin();
+echo Html::submitButton();
+ActiveForm::end();
+
+
+//Шаблон поля формы
+Template::begin();
+?>
+<div class="col-xs-1">
+    {label}
+</div>
+<div class="col-xs-11">
+    {input}
+</div>
+<div class="col-xs-1">{hint}</div>
+<div class="col-xs-11">
+    {error}
+</div>
+<?php
+$inputTemplate = Template::end();
+
+
+$uploader = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'image',
+            'form' => $form]);
+?>
+<div class="image-item clearfix">
+    <div class="image-thumb">
+        {img}
         <span class="label label-primary">{title}</span>
         <div class="buttons">
             <button class="btn btn-danger btn-xs delete">
                 <i class="fa fa-minus"></i>
             </button>
-            <button class="btn btn-primary btn-xs delete">
+            <button class="btn btn-primary btn-xs send">
                 <i class="fa fa-upload"></i>
             </button>
         </div>
     </div>
-    <div class="summary">
-        <?php $form = yii\bootstrap\ActiveForm::begin(); ?>
-        <?= $form->field($data, 'title', ['template' => '{input}'])->textInput(['class' => 'form-control input-sm']); ?>
-        <?= $form->field($data, 'source', ['template' => '{input}'])->textInput(['class' => 'form-control input-sm']); ?>
-        <?= $form->field($data, 'url', ['template' => '{input}'])->textInput(['class' => 'form-control input-sm']); ?>
-        <?= $form->field($data, 'author', ['template' => '{input}'])->textInput(['class' => 'form-control input-sm']); ?>
-        <div class="sections"></div>
-        <div class="messages"></div>
-        <?php yii\bootstrap\ActiveForm::end(); ?>
+    <div class="image-summary">
+        <?php
+        $uploader->templateForm = $templateForm = ActiveForm::begin([
+                    'fieldConfig' => [
+                        'template' => $inputTemplate->template
+                    ],
+                    'class' => 'form-horizontal'
+        ]);
+        $inputOptions = ['class' => 'form-control input-sm'];
+        ?>
+        <div class="row">
+            <?= $templateForm->field($uploader->imageData, 'title')->textInput($inputOptions); ?>
+            <?= $templateForm->field($uploader->imageData, 'source')->textInput($inputOptions); ?>
+            <?= $templateForm->field($uploader->imageData, 'url')->textInput($inputOptions); ?>
+            <?= $templateForm->field($uploader->imageData, 'author')->textInput($inputOptions); ?>
+        </div>
+        <div class="image-sections"></div>
+        <?php ActiveForm::end(); ?>
     </div>
 </div>
+<?php ImageUploader::end(); ?>
 
 <?=
-siasoft\qucms\widgets\Image::widget([
-    'model' => $model,
-    'imageBehavior' => 'image',
-    'formSelector' => '#ModelForm'
-])
-?>
-
-<?=
-siasoft\qucms\widgets\Image::widget([
-    'model' => $model,
-    'imageBehavior' => 'images',
-    'formSelector' => '#ModelForm'
-])
+ImageUploader::widget(['model' => $model, 'imageBehavior' => 'images',
+    'form' => $form, 'templateForm' => $templateForm, 'template' => $uploader->template]);
 ?>

@@ -8,54 +8,62 @@
 
 namespace siasoft\qucms\models;
 
+use yii\helpers\ArrayHelper;
+
 /**
  * Description of ImageData
  *
  * @author XPyct
  */
-class ImageData extends \yii\base\Model {
-
+class ImageData extends \yii\base\Model
+{
     /**
      *
      * @var string
      */
     public $title;
-
     /**
      *
      * @var string
      */
     public $source;
-
     /**
      *
      * @var string
      */
     public $url;
-
     /**
      *
      * @var string
      */
     public $author;
-
     /**
      *
      * @var string[]
      */
     public $files;
-    
     /**
      *
      * @var string[]
      */
-    public $requiredFields;
+    public $requiredFields = [];
 
-    public function rules() {
+    public function rules()
+    {
+        return ArrayHelper::merge([count($this->requiredFields) > 0 ? [$this->requiredFields, 'required'] : null], [
+                    [['title', 'name', 'source', 'author'], 'string', 'max' => 255],
+                    ['url', 'string', 'max' => 512],
+                    [['url'], 'url']
+        ]);
+    }
+
+    public function attributeLabels()
+    {
         return [
-            [$this->requiredFields, 'required'],
-            [['title', 'name', 'source', 'author'], 'string', 'max' => 255],
-            [['url'], 'url']
+            'title' => 'Заголовок',
+            'source' => 'Источник',
+            'url' => 'Ссылка',
+            'author' => 'Автор'
         ];
     }
 
