@@ -2623,7 +2623,7 @@ body, html {
     padding: 0;
 }
 
-.image-item .image-thumb{
+.image-item .thumbnail{
     display: inline-block;
     float:left;
     width: 310px;
@@ -2643,7 +2643,7 @@ body, html {
     text-align: right;
 }
 
-.image-item .image-thumb span{
+.image-item .thumbnail span{
     position: absolute;
     right: 0px;
     top: 0px;

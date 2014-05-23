@@ -2,6 +2,8 @@
 /* @var $imageBehavior \siasoft\qucms\behaviors\ImageBehavior */
 /* @var $formSelector string */
 /* @var $this yii\web\View */
+
+use siasoft\qucms\widgets\Template;
 ?>
 <div id="<?= $this->context->id; ?>" class="image-uploader-widget"> 
     <div class="image-uploader-container clearfix">
@@ -25,3 +27,17 @@
     <div class="messages"></div>
     <div class="files" class="files"></div>
 </div>
+
+<?php Template::begin(); ?>
+<script>
+    $('#<?= $this->context->id; ?>').imageUploader({
+        template: <?= $this->context->id; ?>template,
+        afterAdd: init<?= $this->context->id; ?>Form,
+        imageContainerSelector: '<?= $this->context->imageContainerSelector ?>',
+        labelSelector: '<?= $this->context->labelSelector ?>',
+        submitSelector: '<?= $this->context->submitSelector ?>',
+        deleteSelector: '<?= $this->context->deleteSelector ?>'
+    });
+</script>
+<?php
+$this->registerJs(str_replace(['<script>', '</script>'], '', Template::end()->template));

@@ -45,14 +45,12 @@ Template::begin();
 <?php
 $inputTemplate = Template::end();
 
-
 $uploader = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'image',
             'form' => $form]);
 ?>
 <div class="image-item clearfix">
-    <div class="image-thumb">
-        {img}
-        <span class="label label-primary">{title}</span>
+    <div class="thumbnail">
+        <span class="label label-primary image-label"></span>
         <div class="buttons">
             <button class="btn btn-danger btn-xs delete">
                 <i class="fa fa-minus"></i>
@@ -84,7 +82,40 @@ $uploader = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'image',
 </div>
 <?php ImageUploader::end(); ?>
 
-<?=
-ImageUploader::widget(['model' => $model, 'imageBehavior' => 'images',
-    'form' => $form, 'templateForm' => $templateForm, 'template' => $uploader->template]);
+<?php
+$uploader = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images',
+            'form' => $form]);
 ?>
+<div class="image-item clearfix">
+    <div class="thumbnail">
+        <span class="label label-primary image-label"></span>
+        <div class="buttons">
+            <button class="btn btn-danger btn-xs delete">
+                <i class="fa fa-minus"></i>
+            </button>
+            <button class="btn btn-primary btn-xs send">
+                <i class="fa fa-upload"></i>
+            </button>
+        </div>
+    </div>
+    <div class="image-summary">
+        <?php
+        $uploader->templateForm = $templateForm = ActiveForm::begin([
+                    'fieldConfig' => [
+                        'template' => $inputTemplate->template
+                    ],
+                    'class' => 'form-horizontal'
+        ]);
+        $inputOptions = ['class' => 'form-control input-sm'];
+        ?>
+        <div class="row">
+            <?= $templateForm->field($uploader->imageData, 'title')->textInput($inputOptions); ?>
+            <?= $templateForm->field($uploader->imageData, 'source')->textInput($inputOptions); ?>
+            <?= $templateForm->field($uploader->imageData, 'url')->textInput($inputOptions); ?>
+            <?= $templateForm->field($uploader->imageData, 'author')->textInput($inputOptions); ?>
+        </div>
+        <div class="image-sections"></div>
+        <?php ActiveForm::end(); ?>
+    </div>
+</div>
+<?php ImageUploader::end(); ?>

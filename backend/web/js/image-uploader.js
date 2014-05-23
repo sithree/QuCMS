@@ -1,24 +1,29 @@
 'use strict';
-(function($) {  
+(function($) {
     var methods = {
         init: function(options) {
             var settings = $.extend({
-                'fileSelector': 'top',
-                'background-color': 'blue'
+                'inputSelector': '.image-uploader',
+                'filesSelector': '.files'
             }, options);
+            settings.self = this;
+            settings.files = this.find(settings.filesSelector);
+            settings.tmp = $(settings.template);
             return this.each(function() {
-                var $this = $(this);
-                $this.find('.image-uploader').fileupload({
+                var $this = $(this),
+                        input = $this.find(settings.inputSelector);
+                input.data('imageUploader', settings);
+                input.fileupload({
                     dataType: 'json',
                     autoUpload: false //Отправка только ручками
-                }).on('fileuploadadd.imageUploader', addImage);
+                }).on('fileuploadadd', addImage);
             });
         },
         destroy: function() {
             return this;
         }
     };
-    
+
     $.fn.imageUploader = function(method) {
         if (methods[method]) {
             return methods[ method ].apply(this, Array.prototype.slice.call(arguments, 1));
@@ -30,8 +35,40 @@
     };
 
     var addImage = function(e, data) {
-        $(this).parent('')
+        var
+                $this = $(this),
+                settings = $this.data('imageUploader'),
+                container = settings.tmp.clone(),
+                //imageContainer = container.find(settings.imageContainerSelector),
+                label = container.find(settings.labelSelector),
+                _delete = container.find(settings.deleteSelector),
+                submit = container.find(settings.submitSelector);
+        data.context = container;
+        $.each(data.files, function(index, file) {
+            loadImage(
+                    file,
+                    function(img) {
+                        $(img).insertBefore(label.text(file.name));
+                    },
+                    {
+                        maxWidth: 300,
+                        maxHeight: 255
+                    });
+            settings.files.append(container);
+            _delete.on('click.imageUploader', function() {
+                container.remove();
+            });
+            submit.on('click.imageUploader', function() {
+                container.find('form').submit();
+            });
+
+            settings.afterAdd(container);
+            container.find('form').on('submit', function() {
+                alert('Нахуй бля!');
+            });
+        });
     };
+
 }
 )(jQuery);
 
@@ -129,105 +166,6 @@ $(function() {
         }));
     }
 
-    function validator(container) {
-        container.find('form').submit(function() {
-            $(this).parents('.uploadcontainer').data().submit();
-            return false;
-        });
-        container.find('form').yiiActiveForm({
-            title: {
-                validateOnChange: true,
-                name: 'ImageInfo[title]',
-                container: '.test-title',
-                input: 'input[name="ImageInfo[title]"]',
-                validate: function(attribute, value, messages) {
-                    yii.validation.required(value, messages, {
-                        message: 'Message'
-                    });
-                    yii.validation.string(value, messages, {
-                        skipOnEmpty: true,
-                        message: 'Message',
-                        max: 255,
-                        tooLong: "Слишком длинно"
-                    });
-                }},
-            source: {
-                validateOnChange: true,
-                name: 'ImageSource[source]',
-                container: '.test-source',
-                input: 'input[name="ImageSource[source]"]',
-                validate: function(attribute, value, messages) {
-                    yii.validation.string(value, messages, {
-                        skipOnEmpty: true,
-                        message: 'Message',
-                        max: 255,
-                        tooLong: "Слишком длинно"
-                    });
-                }},
-            url: {
-                validateOnChange: true,
-                name: 'ImageSource[url]',
-                container: '.test-url',
-                input: 'input[name="ImageSource[url]"]',
-                validate: function(attribute, value, messages) {
-                    yii.validation.url(value, messages, {
-                        skipOnEmpty: true,
-                        message: 'Message',
-                        defaultScheme: true,
-                        //enableIDN: true
-                    });
-                    yii.validation.string(value, messages, {
-                        skipOnEmpty: true,
-                        message: 'Message',
-                        max: 512,
-                        tooLong: "Слишком длинно"
-                    });
-                }},
-            author: {
-                validateOnChange: true,
-                name: 'ImageSource[author]',
-                container: '.test-author',
-                input: 'input[name="ImageSource[author]"]',
-                validate: function(attribute, value, messages) {
-                    yii.validation.string(value, messages, {
-                        skipOnEmpty: true,
-                        message: 'Message',
-                        max: 255,
-                        tooLong: "Слишком длинно"
-                    });
-                }},
-        }, {
-            errorCssClass: 'has-error',
-            successCssClass: 'has-success',
-            afterValidate: function($form, attribute, message) {
-                if (message.undefined !== undefined)
-                    pushMessage($form.find('.messages'), message.undefined[0]);
-            }
-        });
-    }
-
-    //Шаблон контейнера
-    var ImageContainerTemplate = $('<div class="uploadcontainer clearfix"/>')
-            .append($('<div class="img-thumbnail"/>')
-                    .append($('<span class="label label-primary"/>'))
-                    .append($('<div class="buttons"/>')
-                            .append($('<button class="btn btn-danger btn-xs delete"/>')
-                                    .append($('<i class="fa fa-minus"></i>')))
-                            .append($('<button class="btn btn-primary btn-xs upload"/>')
-                                    .append($('<i class="fa fa-upload"></i>')))))
-            .append($('<div class="summary"/>')
-                    .append($('<form/>')
-                            .append($('<div class="form-group test-title"/>')
-                                    .append($('<input class="form-control input-sm" name="ImageInfo[title]" placeholder="комментарий"/>')))
-                            .append($('<div class="form-group test-source"/>')
-                                    .append($('<input class="form-control input-sm" name="ImageSource[source]" placeholder="источник"/>')))
-                            .append($('<div class="form-group test-url"/>')
-                                    .append($('<input class="form-control input-sm" name="ImageSource[url]" placeholder="url"/>')))
-                            .append($('<div class="form-group test-author"/>')
-                                    .append($('<input class="form-control input-sm" name="ImageSource[author]" placeholder="автор"/>')))
-                            .append($('<div class=sections/>'))
-                            .append($('<div class=messages/>'))
-                            ));
     $('.fileupload-widget').each(function(index, div) {
         var
                 _div = $(div),
