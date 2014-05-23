@@ -2601,6 +2601,11 @@ body, html {
     -ms-overflow-style: none !important; 
 }
 
+.fileinput-button {
+    //position: inherit;
+    overflow: visible;
+}
+
 .image-uploader-container>div {
     float: left; 
     margin-right: 5px;

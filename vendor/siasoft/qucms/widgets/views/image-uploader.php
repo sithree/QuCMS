@@ -3,6 +3,8 @@
 /* @var $formSelector string */
 /* @var $this yii\web\View */
 
+use yii\helpers\Json;
+
 use siasoft\qucms\widgets\Template;
 ?>
 <div id="<?= $this->context->id; ?>" class="image-uploader-widget"> 
@@ -36,7 +38,8 @@ use siasoft\qucms\widgets\Template;
         imageContainerSelector: '<?= $this->context->imageContainerSelector ?>',
         labelSelector: '<?= $this->context->labelSelector ?>',
         submitSelector: '<?= $this->context->submitSelector ?>',
-        deleteSelector: '<?= $this->context->deleteSelector ?>'
+        deleteSelector: '<?= $this->context->deleteSelector ?>',
+        sections: '<?= Json::encode($imageBehavior->sections) ?>'
     });
 </script>
 <?php

@@ -17,6 +17,15 @@
                     dataType: 'json',
                     autoUpload: false //Отправка только ручками
                 }).on('fileuploadadd', addImage);
+
+                if (input.attr('multiple') === 'multiple') {
+                    settings.files.sortable({
+                        opacity: 0.6,
+                        cursor: 'move',
+                        handle: "img",
+                        axis: 'y'
+                    });
+                }
             });
         },
         destroy: function() {
@@ -54,7 +63,13 @@
                         maxWidth: 300,
                         maxHeight: 255
                     });
+            if ($this.attr('multiple') !== 'multiple') {
+                settings.files.children().remove();
+            }
             settings.files.append(container);
+            
+            
+
             _delete.on('click.imageUploader', function() {
                 container.remove();
             });
@@ -62,9 +77,14 @@
                 container.find('form').submit();
             });
 
-            settings.afterAdd(container);
+            settings.afterAdd(container.find('form'));
             container.find('form').on('submit', function() {
-                alert('Нахуй бля!');
+                var fmdata = $(this).yiiActiveForm('data');
+                if (!fmdata.validated) {
+                    return false;
+                }
+                fmdata.validated = fmdata.submitting = false;
+                data.submit();
             });
         });
     };
@@ -133,25 +153,6 @@ $(function() {
         });
     });
 
-    //отправка одного файла
-    $('.files').on('click', '.upload', function() {
-        $(this).parents('.fileupload-widget').find('form').yiiActiveForm('submitForm');
-    });
-    //удаление файла
-    $('.files').on('click', '.delete', function() {
-        $(this).parents('.uploadcontainer').remove();
-    });
-    $('.fileupload-widget').each(function(index, element) {
-        var _element = $(element);
-        if (_element.find('.fileupload').attr('multiple') === 'multiple') {
-            _element.find('.files').sortable({
-                opacity: 0.6,
-                cursor: 'move',
-                handle: "img",
-                axis: 'y'
-            });
-        }
-    });
     //Вывоводит уведомления
     function pushMessage(where, text) {
         where.children().remove();
@@ -227,7 +228,7 @@ $(function() {
             });
 
             if (_this.attr('multiple') === 'multiple') {
-                _container.find('.files').sortable('refresh');
+               // _container.find('.files').sortable('refresh');
             }
         });
     }).on('fileuploadsubmit', function(e, data) {
