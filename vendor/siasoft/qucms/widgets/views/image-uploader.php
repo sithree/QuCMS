@@ -4,7 +4,6 @@
 /* @var $this yii\web\View */
 
 use yii\helpers\Json;
-
 use siasoft\qucms\widgets\Template;
 ?>
 <div id="<?= $this->context->id; ?>" class="image-uploader-widget"> 
@@ -33,8 +32,13 @@ use siasoft\qucms\widgets\Template;
 <?php Template::begin(); ?>
 <script>
     $('#<?= $this->context->id; ?>').imageUploader({
-        template: <?= $this->context->id; ?>template,
-        afterAdd: init<?= $this->context->id; ?>Form,
+        template: template<?= $this->context->templateItem->id; ?>,
+        beforeAdd: function(template) {
+            //rename<?php //$this->context->templateForm->id ?>Ids(template, 10);
+        },
+        afterAdd: function(form) {
+            //init<?php //$this->context->templateForm->id ?>Form(form, 10);
+        },
         imageContainerSelector: '<?= $this->context->imageContainerSelector ?>',
         labelSelector: '<?= $this->context->labelSelector ?>',
         submitSelector: '<?= $this->context->submitSelector ?>',
@@ -43,4 +47,4 @@ use siasoft\qucms\widgets\Template;
     });
 </script>
 <?php
-$this->registerJs(str_replace(['<script>', '</script>'], '', Template::end()->template));
+$this->registerJs(str_replace(['<script>', '</script>'], '', Template::end()));

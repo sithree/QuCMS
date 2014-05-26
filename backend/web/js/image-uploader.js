@@ -66,6 +66,7 @@
             if ($this.attr('multiple') !== 'multiple') {
                 settings.files.children().remove();
             }
+            settings.beforeAdd(container);
             settings.files.append(container);
             
             

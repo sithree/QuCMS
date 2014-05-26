@@ -8,15 +8,16 @@
 
 namespace siasoft\qucms\widgets;
 
+use yii\base\Widget;
 use yii\helpers\Json;
-use \yii\web\View;
+use yii\web\View;
 
 /**
  * Description of Image
  *
  * @author SW-PC1
  */
-class ImageUploader extends Template {
+class ImageUploader extends Widget {
 
     /**
      * target model
@@ -43,48 +44,40 @@ class ImageUploader extends Template {
     public $templateForm;
 
     /**
+     * item template
+     * @var \yii\widgets\ActiveForm
+     */
+    public $templateItem;
+
+    /**
      * model contain info about image
      * @var \yii\base\Model
      */
     public $imageData;
-    
+
     /**
      * jQuey selector for imageContainer
      * @var string
      */
     public $imageContainerSelector = '.image-thumb';
-    
+
     /**
      * jQuey selector for label
      * @var string 
      */
     public $labelSelector = '.image-label';
-    
     public $submitSelector = '.send';
-    
     public $deleteSelector = '.delete';
+
+    public function init() {
+        parent::init();
+        $behavior = $this->model->getBehavior($this->imageBehavior);
+        $this->imageData = new \siasoft\qucms\models\ImageData(['requiredFields' => $behavior->requiredFields]);
+    }
 
     public function run() {
         echo $this->render('image-uploader', [
             'imageBehavior' => $this->model->getBehavior($this->imageBehavior)
         ]);
     }
-
-    public static function begin($config = array()) {
-        $widget = parent::begin($config);
-        $behavior = $widget->model->getBehavior($widget->imageBehavior);
-        $widget->imageData = new \siasoft\qucms\models\ImageData(['requiredFields' => $behavior->requiredFields]);
-        return $widget;
-    }
-
-    public static function end() {
-        $widget = parent::end();
-        $template = Json::encode(str_replace("id=\"{$widget->templateForm->id}\"", '', $widget->template));
-        $widgetScript = array_pop($widget->view->js[View::POS_READY]);
-        $formScript = str_replace("jQuery('#{$widget->templateForm->id}')", 'sender', array_pop($widget->view->js[View::POS_READY]));
-        $script = "var {$widget->id}template = $template;init{$widget->id}Form = function(sender) { $formScript };$widgetScript";
-        $widget->view->registerJs($script);
-        return $widget;
-    }
-
 }
