@@ -28,12 +28,4 @@ class Template extends \yii\base\Widget {
     public function __toString() {
         return $this->template;
     }
-    
-    public function start($className) {
-        return $className::begin();
-    }
-    
-    public function finish($className) {
-        return $className::end();
-    }
 }

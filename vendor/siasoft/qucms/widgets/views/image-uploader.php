@@ -32,7 +32,7 @@ use siasoft\qucms\widgets\Template;
 <?php Template::begin(); ?>
 <script>
     $('#<?= $this->context->id; ?>').imageUploader({
-        template: template<?= $this->context->templateItem->id; ?>,
+        template: template<?= $this->context->_templateItem->id; ?>,
         beforeAdd: function(template) {
             //rename<?php //$this->context->templateForm->id ?>Ids(template, 10);
         },

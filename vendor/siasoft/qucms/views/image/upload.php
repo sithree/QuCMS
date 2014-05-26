@@ -13,13 +13,12 @@ $this->registerAssetBundle('siasoft\qucms\web\FileUploadAsset');
 $this->registerJsFile('/js/image-uploader.js', ['siasoft\qucms\web\FileUploadAsset']);
 
 $form = ActiveForm::begin();
-$m = new \siasoft\qucms\models\ImageData();
 echo Html::submitButton();
 ActiveForm::end();
 
-$uploader = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'image',
-            'form' => $form]);
-$uploader->templateItem = $template = ScriptTemplate::begin();
+$uploader1 = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'image',
+            'targetForm' => $form]);
+$template1 = $uploader1->beginTemplate();
 ?>
 <div class="image-item clearfix">
     <div class="thumbnail">
@@ -35,31 +34,31 @@ $uploader->templateItem = $template = ScriptTemplate::begin();
     </div>
     <div class="image-summary">
         <?php
-        $uploader->templateForm = $templateForm = $template->start(LazyActiveForm::className(), [
-                    'layout' => 'horizontal',
-                    'fieldConfig' => [
-                        'horizontalCssClasses' => [
-                            'label' => 'col-sm-4 col-md-3 col-lg-2',
-                            'wrapper' => 'col-sm-8 col-md-9 col-lg-10'
-                        ]
-                    ]
+        $template1->beginForm([
+            'layout' => 'horizontal',
+            'fieldConfig' => [
+                'horizontalCssClasses' => [
+                    'label' => 'col-sm-4 col-md-3 col-lg-2',
+                    'wrapper' => 'col-sm-8 col-md-9 col-lg-10'
+                ]
+            ]
         ]);
         ?>
-        <?= $templateForm->field($uploader->imageData, 'title') ?>
-        <?= $templateForm->field($uploader->imageData, 'source') ?>
-        <?= $templateForm->field($uploader->imageData, 'url') ?>
-        <?= $templateForm->field($uploader->imageData, 'author') ?>
+        <?= $template1->field('title') ?>
+        <?= $template1->field('source') ?>
+        <?= $template1->field('url') ?>
+        <?= $template1->field('author') ?>
         <div class="image-sections"></div>
-        <?php $template->finish(LazyActiveForm::className()) ?>
+        <?php $template1->endForm(); ?>
     </div>
 </div>
 <?php
-ScriptTemplate::end();
+$uploader1->endTemplate();
 ImageUploader::end();
 
-$uploader = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images',
-            'form' => $form]);
-$uploader->templateItem = $template = ScriptTemplate::begin();
+$uploader2 = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images',
+            'targetForm' => $form]);
+$template2 = $uploader2->beginTemplate(['formClass' => '\yii\widgets\ActiveForm']);
 ?>
 <div class="image-item clearfix">
     <div class="thumbnail">
@@ -75,31 +74,23 @@ $uploader->templateItem = $template = ScriptTemplate::begin();
     </div>
     <div class="image-summary">
         <?php
-        $uploader->templateForm = $templateForm = $template->start(LazyActiveForm::className(), [
-                    'layout' => 'horizontal',
-                    'fieldConfig' => [
-                        'horizontalCssClasses' => [
-                            'label' => 'col-sm-4 col-md-3 col-lg-2',
-                            'wrapper' => 'col-sm-8 col-md-9 col-lg-10'
-                        ]
-                    ]
-        ]);
+        $template2->beginForm();
         ?>
-        <?= $templateForm->field($uploader->imageData, 'title'); ?>
-        <?= $templateForm->field($uploader->imageData, 'source') ?>
-        <?= $templateForm->field($uploader->imageData, 'url') ?>
-        <?= $templateForm->field($uploader->imageData, 'author') ?>
+        <?= $template2->field('title'); ?>
+        <?= $template2->field('source') ?>
+        <?= $template2->field('url') ?>
+        <?= $template2->field('author') ?>
         <div class="image-sections"></div>
-        <?php $template->finish(LazyActiveForm::className()) ?>
+        <?php $template2->endForm() ?>
     </div>
 </div>
 <?php
-ScriptTemplate::end();
+$uploader2->endTemplate();
 ImageUploader::end();
 
-$uploader = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images',
-            'form' => $form]);
-$uploader->templateItem = ScriptTemplate::begin();
+$uploader3 = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images',
+            'targetForm' => $form, 'templateItemClass' => '\siasoft\qucms\widgets\ScriptTemplate']);
+$uploader3->beginTemplate();
 ?>
 <div class="image-item clearfix">
     <div class="thumbnail">
@@ -112,5 +103,5 @@ $uploader->templateItem = ScriptTemplate::begin();
     </div>
 </div>
 <?php
-ScriptTemplate::end();
+$uploader3->endTemplate();
 ImageUploader::end();

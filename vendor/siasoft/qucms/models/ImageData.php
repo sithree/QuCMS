@@ -15,8 +15,9 @@ use yii\helpers\ArrayHelper;
  *
  * @author XPyct
  */
-class ImageData extends \yii\base\Model
+class ImageData extends \yii\base\Model implements ImageDataInterface
 {
+    private $_requiredFields;
     /**
      *
      * @var string
@@ -42,15 +43,10 @@ class ImageData extends \yii\base\Model
      * @var string[]
      */
     public $files;
-    /**
-     *
-     * @var string[]
-     */
-    public $requiredFields = [];
 
     public function rules()
     {
-        return ArrayHelper::merge([count($this->requiredFields) > 0 ? [$this->requiredFields, 'required'] : null], [
+        return ArrayHelper::merge([count($this->_requiredFields) > 0 ? [$this->_requiredFields, 'required'] : null], [
                     [['title', 'name', 'source', 'author'], 'string', 'max' => 255],
                     ['url', 'string', 'max' => 512],
                     [['url'], 'url']
@@ -66,5 +62,8 @@ class ImageData extends \yii\base\Model
             'author' => 'Автор'
         ];
     }
-
+    public function setRequiredFields(array $value)
+    {
+        $this->_requiredFields = $value;
+    }
 }

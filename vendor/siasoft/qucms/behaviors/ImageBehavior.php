@@ -35,6 +35,16 @@ class ImageBehavior extends \yii\base\Behavior implements \JsonSerializable {
      * @var int
      */
     public $requiredCount = 0;
+    
+    public $dataClass = 'siasoft\qucms\models\ImageData';
+    
+    public function init()
+    {
+        $dataInterface = '\siasoft\qucms\models\ImageDataInterface';
+        if (!is_subclass_of($this->dataClass, $dataInterface)){
+            throw new \yii\base\InvalidConfigException("{$this->dataClass} not implement $dataInterface");
+        }
+    }
 
     /**
      * Getter for modelName

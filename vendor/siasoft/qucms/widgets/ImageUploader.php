@@ -11,73 +11,80 @@ namespace siasoft\qucms\widgets;
 use yii\base\Widget;
 use yii\helpers\Json;
 use yii\web\View;
+use yii\helpers\ArrayHelper;
 
 /**
  * Description of Image
  *
  * @author SW-PC1
  */
-class ImageUploader extends Widget {
-
+class ImageUploader extends Widget
+{
     /**
      * target model
      * @var \yii\base\Model
      */
     public $model;
-
     /**
      * name of image behavior
      * @var string
      */
     public $imageBehavior;
-
     /**
      * editing form of model
      * @var \yii\widgets\ActiveForm
      */
-    public $form;
-
-    /**
-     * form from this item template
-     * @var \yii\widgets\ActiveForm
-     */
-    public $templateForm;
-
-    /**
-     * item template
-     * @var \yii\widgets\ActiveForm
-     */
-    public $templateItem;
-
-    /**
-     * model contain info about image
-     * @var \yii\base\Model
-     */
-    public $imageData;
-
+    public $targetForm;
     /**
      * jQuey selector for imageContainer
      * @var string
      */
     public $imageContainerSelector = '.image-thumb';
-
     /**
      * jQuey selector for label
      * @var string 
      */
+    public $templateItemClass = '\siasoft\qucms\widgets\ImageUploaderTeplate';
     public $labelSelector = '.image-label';
     public $submitSelector = '.send';
     public $deleteSelector = '.delete';
+    public $_templateItem;
+    /**
+     *
+     * @var \siasoft\qucms\behaviors\ImageBehavior
+     */
+    private $_behavior;
 
-    public function init() {
+    public function init()
+    {
         parent::init();
-        $behavior = $this->model->getBehavior($this->imageBehavior);
-        $this->imageData = new \siasoft\qucms\models\ImageData(['requiredFields' => $behavior->requiredFields]);
+        $this->_behavior = $behavior = $this->model->getBehavior($this->imageBehavior);
     }
 
-    public function run() {
+    public function run()
+    {
         echo $this->render('image-uploader', [
             'imageBehavior' => $this->model->getBehavior($this->imageBehavior)
         ]);
     }
+
+    public function beginTemplate(array $options = [])
+    {
+        $templateItemClass = $this->templateItemClass;
+        $imageUploaderTemplateClass = '\siasoft\qucms\widgets\ImageUploaderTeplate';
+        if ($templateItemClass === $imageUploaderTemplateClass || is_subclass_of($templateItemClass, $imageUploaderTemplateClass)) {
+            $options = ArrayHelper::merge($options, [
+                        'model' => \Yii::createObject($this->_behavior->dataClass, [
+                            'requiredFields' => $this->_behavior->requiredFields
+            ])]);
+        }
+        return $this->_templateItem = $templateItemClass::begin($options);
+    }
+
+    public function endTemplate()
+    {
+        $templateItemClass = $this->templateItemClass;
+        $templateItemClass::end();
+    }
+
 }

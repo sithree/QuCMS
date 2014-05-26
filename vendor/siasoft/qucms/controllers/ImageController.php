@@ -72,8 +72,7 @@ class ImageController extends Controller {
 
     public function actionUpload() {
         return $this->render(false, [
-                    'model' => new \siasoft\qucms\models\FakeImageModel(),
-                    'data' => new \siasoft\qucms\models\ImageData(['requiredFields' => 'title'])
+                    'model' => new \siasoft\qucms\models\FakeImageModel()
         ]);
     }
 
