@@ -13,6 +13,10 @@ return [
         ],
     ],
     'modules' => [
-        'qucms' => 'siasoft\qucms\Module'
+        'qucms' => [
+            'class' => 'siasoft\qucms\Module'],
+        'realEstate' => [
+            'class' => 'siasoft\qucms\moduels\realEstate\Module',
+        ],
     ]
 ];
