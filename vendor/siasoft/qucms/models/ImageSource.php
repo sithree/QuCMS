@@ -9,12 +9,14 @@ use Yii;
  *
  * @property integer $image_id
  * @property string $name
- * @property string $link
+ * @property string $source
+ * @property string $url
  * @property string $author
+ *
+ * @property ImageInfo $image
  */
 class ImageSource extends \yii\db\ActiveRecord
 {
-
     /**
      * @inheritdoc
      */
@@ -31,8 +33,7 @@ class ImageSource extends \yii\db\ActiveRecord
         return [
             [['image_id'], 'required'],
             [['image_id'], 'integer'],
-            [['name', 'source', 'author'], 'string', 'max' => 255],
-            [['url'], 'url']
+            [['name', 'source', 'url', 'author'], 'string', 'max' => 255]
         ];
     }
 
@@ -43,11 +44,18 @@ class ImageSource extends \yii\db\ActiveRecord
     {
         return [
             'image_id' => 'Image ID',
-            'name' => 'Имя',
-            'source' => 'Имя источника',
+            'name' => 'Name',
+            'source' => 'Source',
             'url' => 'Url',
-            'author' => 'Автор',
+            'author' => 'Author',
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getImage()
+    {
+        return $this->hasOne(ImageInfo::className(), ['id' => 'image_id']);
+    }
 }

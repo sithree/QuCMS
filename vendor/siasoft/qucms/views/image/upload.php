@@ -92,7 +92,7 @@ $uploader3 = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images
             'targetForm' => $form, 'templateItemClass' => '\siasoft\qucms\widgets\ScriptTemplate']);
 $uploader3->beginTemplate();
 ?>
-<div class="image-item clearfix">
+<div class="image-item clearfix" style="float: left">
     <div class="thumbnail">
         <span class="label label-primary image-label"></span>
         <div class="buttons">

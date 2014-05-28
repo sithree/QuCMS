@@ -46,7 +46,7 @@ class ImageData extends \yii\base\Model implements ImageDataInterface
 
     public function rules()
     {
-        return ArrayHelper::merge([count($this->_requiredFields) > 0 ? [$this->_requiredFields, 'required'] : null], [
+        return ArrayHelper::merge(count($this->_requiredFields) > 0 ? [[$this->_requiredFields, 'required']] : [], [
                     [['title', 'name', 'source', 'author'], 'string', 'max' => 255],
                     ['url', 'string', 'max' => 512],
                     [['url'], 'url']

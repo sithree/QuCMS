@@ -16,7 +16,7 @@ return [
         'qucms' => [
             'class' => 'siasoft\qucms\Module'],
         'realEstate' => [
-            'class' => 'siasoft\qucms\moduels\realEstate\Module',
+            'class' => 'siasoft\qucms\modules\realEstate\Module',
         ],
     ]
 ];

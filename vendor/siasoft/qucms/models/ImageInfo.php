@@ -8,16 +8,17 @@ use Yii;
  * This is the model class for table "image_info".
  *
  * @property integer $id
- * @property integer $section
- * @property integer $original
+ * @property integer $section_id
  * @property string $title
  * @property integer $width
  * @property integer $height
  * @property integer $size
+ *
+ * @property ImageSection $section
+ * @property ImageSource $imageSource
  */
 class ImageInfo extends \yii\db\ActiveRecord
 {
-
     /**
      * @inheritdoc
      */
@@ -32,8 +33,7 @@ class ImageInfo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['width', 'height', 'size'], 'default', 'value' => 0],
-            [['section', 'width', 'height', 'size'], 'integer'],
+            [['section_id', 'width', 'height', 'size'], 'integer'],
             [['title', 'width', 'height', 'size'], 'required'],
             [['title'], 'string', 'max' => 255]
         ];
@@ -46,17 +46,27 @@ class ImageInfo extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'section' => 'Раздел',
+            'section_id' => 'Section ID',
             'title' => 'Заголовок',
             'width' => 'Ширина',
             'height' => 'Высота',
-            'size' => 'Размер'
+            'size' => 'Размер',
         ];
     }
 
-    public function getSource()
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSection()
+    {
+        return $this->hasOne(ImageSection::className(), ['id' => 'section_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getImageSource()
     {
         return $this->hasOne(ImageSource::className(), ['image_id' => 'id']);
     }
-
 }
