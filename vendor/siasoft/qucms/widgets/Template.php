@@ -13,19 +13,27 @@ namespace siasoft\qucms\widgets;
  *
  * @author SW-PC1
  */
-class Template extends \yii\base\Widget {
-
+class Template extends \yii\base\Widget
+{
+    /**
+     *
+     * @var string
+     */
     protected $template;
 
-    public function init() {
+    public function init()
+    {
         ob_start();
     }
 
-    public function run() {
+    public function run()
+    {
         $this->template = ob_get_clean();
     }
-    
-    public function __toString() {
+
+    public function __toString()
+    {
         return $this->template;
     }
+
 }

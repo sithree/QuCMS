@@ -10,7 +10,6 @@ namespace siasoft\qucms\widgets;
 
 use yii\base\Widget;
 use yii\helpers\Json;
-use yii\web\View;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -20,6 +19,14 @@ use yii\helpers\ArrayHelper;
  */
 class ImageUploader extends Widget
 {
+    /**
+     * @var \siasoft\qucms\behaviors\ImageBehavior
+     */
+    private $_behavior;
+    /**
+     * @var Template
+     */
+    private $_templateItem;
     /**
      * target model
      * @var \yii\base\Model
@@ -36,24 +43,27 @@ class ImageUploader extends Widget
      */
     public $targetForm;
     /**
-     * jQuey selector for imageContainer
-     * @var string
-     */
-    public $imageContainerSelector = '.image-thumb';
-    /**
-     * jQuey selector for label
+     * class of template item
      * @var string 
      */
     public $templateItemClass = '\siasoft\qucms\widgets\ImageUploaderTeplate';
-    public $labelSelector = '.image-label';
-    public $submitSelector = '.send';
-    public $deleteSelector = '.delete';
-    public $_templateItem;
+    public $options = [];
     /**
-     *
-     * @var \siasoft\qucms\behaviors\ImageBehavior
+     * parts of template
+     * @var string[]
      */
-    private $_behavior;
+    public $templateParts = [
+        '{img}' => '<img id="{id}-img" />',
+        '{label}' => '<span class="label label-primary" id={id}-label></span>',
+        '{deleteButton}' => '<button class="btn btn-danger btn-xs" id="{id}-delete"><i class="fa fa-minus"></i></button>',
+        '{sendButton}' => '<button class="btn btn-primary btn-xs" id="{id}-upload"><i class="fa fa-upload"></i></button>'
+    ];
+    public $clientOptions = [
+        'imageSelector' => '#{id}-img',
+        'labelSelector' => '#{id}-label',
+        'deleteButtonSelector' => '#{id}-delete',
+        'sendButtonSelector' => '#{id}-upload'
+    ];
 
     public function init()
     {
@@ -63,9 +73,12 @@ class ImageUploader extends Widget
 
     public function run()
     {
+        $this->options['id'] = $this->id;
         echo $this->render('image-uploader', [
-            'imageBehavior' => $this->model->getBehavior($this->imageBehavior)
+            'maxCount' => $this->_behavior->maxCount,
+            'options' => $this->options
         ]);
+        $this->registerScript();
     }
 
     public function beginTemplate(array $options = [])
@@ -74,7 +87,8 @@ class ImageUploader extends Widget
         $imageUploaderTemplateClass = '\siasoft\qucms\widgets\ImageUploaderTeplate';
         if ($templateItemClass === $imageUploaderTemplateClass || is_subclass_of($templateItemClass, $imageUploaderTemplateClass)) {
             $options = ArrayHelper::merge($options, [
-                        'model' => \Yii::createObject($this->_behavior->dataClass, [
+                        'model' => \Yii::createObject([
+                            'class' => $this->_behavior->dataClass,
                             'requiredFields' => $this->_behavior->requiredFields
             ])]);
         }
@@ -85,6 +99,19 @@ class ImageUploader extends Widget
     {
         $templateItemClass = $this->templateItemClass;
         $templateItemClass::end();
+    }
+
+    protected function registerScript()
+    {
+        $replaceIds = function($a) {
+            return str_replace('{id}', $this->id, $a);
+        };
+        $options = Json::encode(array_merge([
+                    'sections' => $this->_behavior->sections,
+                    'template' => strtr($this->_templateItem, array_map($replaceIds, $this->templateParts)),
+                    'templateOptions' => $this->_templateItem
+                                ], array_map($replaceIds, $this->clientOptions)));
+        $this->view->registerJs("jQuery('#{$this->id}').imageUploader($options);");
     }
 
 }

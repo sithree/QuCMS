@@ -1,31 +1,51 @@
 'use strict';
 (function($) {
+    function ImageUploader(widget) {
+        this.self = this;
+        this.widget = widget;
+        this.progressBar = widget.find('.progress-bar');
+
+        this.send = function(e, data) {
+            progressBar.fadeIn();
+        };
+
+        this.always = function(e, data) {
+            progressBar.fadeOut().css('width', '0%');
+        };
+
+        this.progress = function(e, data) {
+            progress = parseInt(data.loaded / data.total * 100, 10);
+            progressBar.css('width', progress + '%');
+        };
+    }
+
     var methods = {
         init: function(options) {
-            var settings = $.extend({
-                'inputSelector': '.image-uploader',
-                'filesSelector': '.files'
-            }, options);
-            settings.self = this;
-            settings.files = this.find(settings.filesSelector);
-            settings.tmp = $(settings.template);
+            //settings.self = this;
+            //settings.files = this.find(settings.filesSelector);
+            //settings.tmp = $(settings.template);
             return this.each(function() {
-                var $this = $(this),
-                        input = $this.find(settings.inputSelector);
-                input.data('imageUploader', settings);
+                var
+                        $this = $(this),
+                        input = $this.find('image-uploader'),
+                        imageUploader = $.extend(new ImageUploader($this), options);
+                //input.data('imageUploader', settings);
                 input.fileupload({
                     dataType: 'json',
-                    autoUpload: false //Отправка только ручками
-                }).on('fileuploadadd', addImage);
+                    singleFileUploads: false,
+                    send: imageUploader.send,
+                    always: imageUploader.always,
+                    progressall: imageUploader.progress
+                });
 
-                if (input.attr('multiple') === 'multiple') {
-                    settings.files.sortable({
-                        opacity: 0.6,
-                        cursor: 'move',
-                        handle: "img",
-                        axis: 'y'
-                    });
-                }
+//                if (input.attr('multiple') === 'multiple') {
+//                    settings.files.sortable({
+//                        opacity: 0.6,
+//                        cursor: 'move'
+//                                //handle: "img"
+//                    });
+//                    settings.files.disableSelection();
+//                }
             });
         },
         destroy: function() {
@@ -48,37 +68,30 @@
                 $this = $(this),
                 settings = $this.data('imageUploader'),
                 container = settings.tmp.clone(),
-                //imageContainer = container.find(settings.imageContainerSelector),
-                label = container.find(settings.labelSelector),
-                _delete = container.find(settings.deleteSelector),
-                submit = container.find(settings.submitSelector);
+                image = container.find(settings.imageSelector).removeAttr('id'),
+                label = container.find(settings.labelSelector).removeAttr('id'),
+                _delete = container.find(settings.deleteButtonSelector).removeAttr('id');
         data.context = container;
         $.each(data.files, function(index, file) {
-            loadImage(
-                    file,
-                    function(img) {
-                        $(img).insertBefore(label.text(file.name));
-                    },
-                    {
-                        maxWidth: 300,
-                        maxHeight: 255
-                    });
+            label.text(file.name);
             if ($this.attr('multiple') !== 'multiple') {
                 settings.files.children().remove();
             }
-            settings.beforeAdd(container);
-            settings.files.append(container);
-            
-            
+
+            if (settings.templateOptions.renameIds) {
+                settings.templateOptions.renameIds(container.find('form'), 10);
+            }
+
+            settings.files.append($('<li/>').append(container));
+
+            if (settings.templateOptions.initForm) {
+                settings.templateOptions.initForm(container.find('form'), 10);
+            }
 
             _delete.on('click.imageUploader', function() {
                 container.remove();
             });
-            submit.on('click.imageUploader', function() {
-                container.find('form').submit();
-            });
 
-            settings.afterAdd(container.find('form'));
             container.find('form').on('submit', function() {
                 var fmdata = $(this).yiiActiveForm('data');
                 if (!fmdata.validated) {
@@ -229,7 +242,7 @@ $(function() {
             });
 
             if (_this.attr('multiple') === 'multiple') {
-               // _container.find('.files').sortable('refresh');
+                // _container.find('.files').sortable('refresh');
             }
         });
     }).on('fileuploadsubmit', function(e, data) {

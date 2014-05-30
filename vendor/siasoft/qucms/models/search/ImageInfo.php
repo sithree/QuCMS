@@ -17,7 +17,7 @@ class ImageInfo extends ImageInfoModel
     {
         return [
             [['id', 'section', 'width', 'height', 'size'], 'integer'],
-            [['title', 'source.name', 'source.source', 'source.url', 'source.author'], 'safe'],
+            [['title', 'imageSource.name', 'imageSource.source', 'imageSource.url', 'imageSource.author'], 'safe'],
         ];
     }
 
@@ -30,42 +30,42 @@ class ImageInfo extends ImageInfoModel
     public function attributes()
     {
         return array_merge(parent::attributes(), [
-            'source.name',
-            'source.source',
-            'source.url',
-            'source.author'
+            'imageSource.name',
+            'imageSource.source',
+            'imageSource.url',
+            'imageSource.author'
         ]);
     }
 
     public function search($params)
     {
         $query = ImageInfoModel::find()->joinWith([
-            'source' => function($q) {
-        $q->from(['source' => 'image_source']);
+            'imageSource' => function($q) {
+        $q->from(['imageSource' => 'image_source']);
     }]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
-        $dataProvider->sort->attributes['source.name'] = [
-            'asc' => ['source.name' => SORT_ASC],
-            'desc' => ['source.name' => SORT_DESC],
+        $dataProvider->sort->attributes['imageSource.name'] = [
+            'asc' => ['imageSource.name' => SORT_ASC],
+            'desc' => ['imageSource.name' => SORT_DESC],
         ];
 
-        $dataProvider->sort->attributes['source.source'] = [
-            'asc' => ['source.source' => SORT_ASC],
-            'desc' => ['source.source' => SORT_DESC],
+        $dataProvider->sort->attributes['imageSource.source'] = [
+            'asc' => ['imageSource.source' => SORT_ASC],
+            'desc' => ['imageSource.source' => SORT_DESC],
         ];
 
-        $dataProvider->sort->attributes['source.url'] = [
-            'asc' => ['source.url' => SORT_ASC],
-            'desc' => ['source.url' => SORT_DESC],
+        $dataProvider->sort->attributes['imageSource.url'] = [
+            'asc' => ['imageSource.url' => SORT_ASC],
+            'desc' => ['imageSource.url' => SORT_DESC],
         ];
 
-        $dataProvider->sort->attributes['source.author'] = [
-            'asc' => ['source.author' => SORT_ASC],
-            'desc' => ['source.author' => SORT_DESC],
+        $dataProvider->sort->attributes['imageSource.author'] = [
+            'asc' => ['imageSource.author' => SORT_ASC],
+            'desc' => ['imageSource.author' => SORT_DESC],
         ];
 
         if (!($this->load($params) && $this->validate())) {
@@ -81,10 +81,10 @@ class ImageInfo extends ImageInfoModel
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-                ->andFilterWhere(['like', 'source.name', $this->getAttribute('source.name')])
-                ->andFilterWhere(['like', 'source.source', $this->getAttribute('source.source')])
-                ->andFilterWhere(['like', 'source.url', $this->getAttribute('source.url')])
-                ->andFilterWhere(['like', 'source.author', $this->getAttribute('source.author')]);
+                ->andFilterWhere(['like', 'imageSource.name', $this->getAttribute('imageSource.name')])
+                ->andFilterWhere(['like', 'imageSource.source', $this->getAttribute('imageSource.source')])
+                ->andFilterWhere(['like', 'imageSource.url', $this->getAttribute('imageSource.url')])
+                ->andFilterWhere(['like', 'imageSource.author', $this->getAttribute('imageSource.author')]);
         //->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;

@@ -9,13 +9,16 @@ use siasoft\qucms\models\search\ImageInfo as ImageInfoSearch;
 use siasoft\qucms\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use siasoft\qucms\web\UploadHandler;
 
 /**
  * ImageController implements the CRUD actions for ImageInfo model.
  */
-class ImageController extends Controller {
+class ImageController extends Controller
+{
 
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -30,7 +33,8 @@ class ImageController extends Controller {
      * Lists all ImageInfo models.
      * @return mixed
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $searchModel = new ImageInfoSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->getQueryParams());
         return $this->render('index', [
@@ -44,7 +48,8 @@ class ImageController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id) {
+    public function actionView($id)
+    {
         return $this->render('view', [
                     'model' => $this->findModel($id),
         ]);
@@ -55,7 +60,8 @@ class ImageController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate() {
+    public function actionCreate()
+    {
         $model = new ImageInfo;
         if ($model->load(Yii::$app->request->post())) {
             try {
@@ -70,16 +76,21 @@ class ImageController extends Controller {
         ]);
     }
 
-    public function actionUpload() {
+    public function actionUpload()
+    {
         return $this->render(false, [
                     'model' => new \siasoft\qucms\models\FakeImageModel()
         ]);
     }
 
-    public function actionUploadImage() {
-        return \yii\helpers\Json::encode(Yii::$app->request->post());
-        //list($result, $image) = \siasoft\qucms\web\Image::Upload();
-        //return \yii\helpers\Json::encode($result);
+    public function actionUploadImage()
+    {
+        $imageUploader = new UploadHandler([
+            'image_versions' => [],
+            'upload_dir' => Yii::$app->basePath . '/web/img/upload/',
+            'upload_url' => '/img/upload/'
+                ], false);
+        return $imageUploader->post();
     }
 
     /**
@@ -88,7 +99,8 @@ class ImageController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id) {
+    public function actionUpdate($id)
+    {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -106,7 +118,8 @@ class ImageController extends Controller {
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id) {
+    public function actionDelete($id)
+    {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -119,7 +132,8 @@ class ImageController extends Controller {
      * @return ImageInfo the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id) {
+    protected function findModel($id)
+    {
         if (($model = ImageInfo::findOne($id)) !== null) {
             return $model;
         } else {

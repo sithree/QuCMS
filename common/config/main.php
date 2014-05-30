@@ -11,6 +11,12 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        'urlManager' => [
+            'enablePrettyUrl' => true,
+            'rules' => [
+            ],
+        // ...
+        ]
     ],
     'modules' => [
         'qucms' => [

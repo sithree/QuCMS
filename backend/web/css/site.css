@@ -2620,7 +2620,7 @@ body, html {
 .image-uploader-container .progress {
     height: 10px;
     margin-bottom: 0px;
-    display: none;
+    /*display: none;*/
 }
 
 .image-uploader-container {
@@ -2628,63 +2628,73 @@ body, html {
     padding: 0;
 }
 
-.image-item .thumbnail{
+.image-uploader-widget .thumbnail{
     display: inline-block;
     float:left;
     width: 310px;
     height: 235px;
-    margin-right: 5px;
+    margin: 0px;
     position: relative;
 }
 
-.image-item .help-block {
+.image-uploader-widget .help-block {
     margin: 0;
     height: 19px;
 }
 
-.image-item .form-group {
+.image-uploader-widget .form-group {
     margin-bottom: 0px;
 }
 
-.image-item .control-label {
+.image-uploader-widget .control-label {
     margin-top: 5px;
     text-align: right;
 }
 
-.image-item .thumbnail span{
+.image-uploader-widget .thumbnail span{
     position: absolute;
     right: 0px;
     top: 0px;
 }
 
-.image-item .image-summary {
+.image-uploader-widget .image-summary {
     overflow: hidden;
     padding: 5px 0 0 0;
 }
 
-.image-item .buttons {
+.image-uploader-widget .buttons {
     position: absolute;
     left: 0px;
     bottom: 0px;
     display: none;
 }
 
-.image-item:hover .buttons {
+.image-uploader-widget li {
+    float: left;
+    width: 310px;
+    height: 235px;
+    margin: 2px;
+}
+
+.image-uploader-widget.with-form li {
+    float: none;
+    width: auto;
+    height: auto;
+}
+
+.image-uploader-widget li:hover .buttons {
     display: block;
 }
 
-.image-item .buttons button {
+.image-uploader-widget .buttons button {
     margin-left: 5px;
     margin-bottom: 5px;
 }
 
-.image-item .alert {
-    padding: 10px;
-    margin: 0;
-}
-
-.files {
-    margin: 10px -2px 10px 0;    
+.image-uploader-widget .files {
+    list-style: none;
+    padding: 0;
+    margin: 0 -2px 0 -2px;
 }
 
 .condition-block, .condition {

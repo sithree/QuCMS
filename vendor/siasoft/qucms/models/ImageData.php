@@ -62,8 +62,10 @@ class ImageData extends \yii\base\Model implements ImageDataInterface
             'author' => 'Автор'
         ];
     }
+
     public function setRequiredFields(array $value)
     {
         $this->_requiredFields = $value;
     }
+
 }
