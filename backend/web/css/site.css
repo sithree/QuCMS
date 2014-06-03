@@ -2620,7 +2620,7 @@ body, html {
 .image-uploader-container .progress {
     height: 10px;
     margin-bottom: 0px;
-    /*display: none;*/
+    display: none;
 }
 
 .image-uploader-container {

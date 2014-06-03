@@ -1,22 +1,33 @@
 'use strict';
 (function($) {
-    function ImageUploader(widget) {
-        this.self = this;
+    function ImageUploader(widget, input) {
+        var self = this;
         this.widget = widget;
-        this.progressBar = widget.find('.progress-bar');
+        this.progressBar = widget.find('.progress');
+        this.progressLine = widget.find('.progress-bar');
 
-        this.send = function(e, data) {
-            progressBar.fadeIn();
+        this.start = function(e, data) {
+            self.progressBar.css('display', 'block');
         };
 
-        this.always = function(e, data) {
-            progressBar.fadeOut().css('width', '0%');
+        this.stop = function(e, data) {
+            self.progressBar.fadeOut(function() {
+                self.progressLine.css('width', '0%');
+            });
         };
 
         this.progress = function(e, data) {
-            progress = parseInt(data.loaded / data.total * 100, 10);
-            progressBar.css('width', progress + '%');
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            self.progressLine.css('width', progress + '%');
         };
+
+        input.fileupload({
+            dataType: 'json',
+            singleFileUploads: false,
+            start: self.start,
+            stop: self.stop,
+            progressall: self.progress
+        });
     }
 
     var methods = {
@@ -27,16 +38,9 @@
             return this.each(function() {
                 var
                         $this = $(this),
-                        input = $this.find('image-uploader'),
-                        imageUploader = $.extend(new ImageUploader($this), options);
+                        input = $this.find('.image-uploader'),
+                        imageUploader = $.extend(new ImageUploader($this, input), options);
                 //input.data('imageUploader', settings);
-                input.fileupload({
-                    dataType: 'json',
-                    singleFileUploads: false,
-                    send: imageUploader.send,
-                    always: imageUploader.always,
-                    progressall: imageUploader.progress
-                });
 
 //                if (input.attr('multiple') === 'multiple') {
 //                    settings.files.sortable({
