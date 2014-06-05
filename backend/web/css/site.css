@@ -2679,7 +2679,6 @@ body, html {
 .image-uploader-widget.with-form li {
     float: none;
     width: auto;
-    height: auto;
 }
 
 .image-uploader-widget li:hover .buttons {

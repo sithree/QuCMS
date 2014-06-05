@@ -47,6 +47,40 @@ $template1 = $uploader1->beginTemplate();
 $uploader1->endTemplate();
 ImageUploader::end();
 
+$uploader2 = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images',
+            'targetForm' => $form, 'options' => ['class' => 'image-uploader-widget with-form']]);
+$template2 = $uploader2->beginTemplate();
+?>
+<div class="thumbnail">
+    {img}
+    {label}
+    <div class="buttons">
+        {deleteButton}
+    </div>
+</div>
+
+<div class="image-summary">
+    <?php
+    $template2->beginForm([
+        'layout' => 'horizontal',
+        'fieldConfig' => [
+            'horizontalCssClasses' => [
+                'label' => 'col-sm-4 col-md-3 col-lg-2',
+                'wrapper' => 'col-sm-8 col-md-9 col-lg-10'
+            ]
+        ]
+    ]);
+    ?>
+    <?= $template2->field('title') ?>
+    <?= $template2->field('source') ?>
+    <?= $template2->field('url') ?>
+    <?= $template2->field('author') ?>
+    <?php $template2->endForm(); ?>
+</div>
+<?php
+$uploader2->endTemplate();
+ImageUploader::end();
+
 $uploader3 = ImageUploader::begin(['model' => $model, 'imageBehavior' => 'images',
             'targetForm' => $form,
             'options' => ['class' => 'image-uploader-widget'],

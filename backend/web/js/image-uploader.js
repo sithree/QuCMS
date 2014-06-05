@@ -1,35 +1,5 @@
 'use strict';
 (function($) {
-
-    function setCookie(name, value, options) {
-        options = options || {};
-
-        var expires = options.expires;
-
-        if (typeof expires == "number" && expires) {
-            var d = new Date();
-            d.setTime(d.getTime() + expires * 1000);
-            expires = options.expires = d;
-        }
-        if (expires && expires.toUTCString) {
-            options.expires = expires.toUTCString();
-        }
-
-        value = encodeURIComponent(value);
-
-        var updatedCookie = name + "=" + value;
-
-        for (var propName in options) {
-            updatedCookie += "; " + propName;
-            var propValue = options[propName];
-            if (propValue !== true) {
-                updatedCookie += "=" + propValue;
-            }
-        }
-        document.cookie = updatedCookie;
-    }
-
-
     function ImageUploader(widgetContainer, options) {
         this.widgetContainer = widgetContainer;
         this.input = '.image-uploader';
@@ -37,9 +7,15 @@
         this.progressLine = '.progress-bar';
         this.files = '.files';
         this.index = 0;
+        this.storagePath = location.pathname.replace(/[.//]/g, '_') + '_' + this.widgetContainer.attr('id');
 
-        this.remove = function() {
-            $(this).parents('li').first().remove();
+        this._ctor = function() {
+            var strVal = localStorage[this.storagePath];
+            this.addImages(strVal === undefined ? [] : JSON.parse(strVal));
+        };
+
+        this.remove = function(container) {
+            container.remove();
         };
 
         this.start = function(e, data) {
@@ -55,32 +31,56 @@
             var progress = parseInt(data.loaded / data.total * 100, 10);
             this.progressLine.css('width', progress + '%');
         }.bind(this);
+        
+        this.changeSort = function(e, data) {
+            this.save();
+        }.bind(this);
 
-        this.done = function(e, data) {
+        this.addImages = function(files) {
             var self = this;
-            $.each(data.result.files, function(index, file) {
+            $.each(files, function() {
                 if (self.input.attr('multiple') !== 'multiple' && self.files.find('li').length > 0) {
-                    self.remove.apply(self.files.find('li').children().first());
+                    self.remove(self.files.find('li'));
                 }
                 var container = self.template.clone().hide();
-                container.find(self.imageSelector).removeAttr('id').attr('src', file.url).load(function() {
+                container.find(self.imageSelector).removeAttr('id').attr('src', this.url).load(function() {
                     container.show();
                 });
-                container.find(self.labelSelector).removeAttr('id').text(file.name);
-                container.find(self.deleteButtonSelector).removeAttr('id').on('click.imageUploader', self.remove);
+                container.find(self.labelSelector).removeAttr('id').text(this.name);
+                container.find(self.deleteButtonSelector).removeAttr('id').on('click.imageUploader', function() {
+                    self.remove(container.parent());
+                    self.save();
+                });
 
                 if (self.templateOptions.renameIds) {
                     self.templateOptions.renameIds(container.find('form'), self.index);
                 }
 
-                self.files.append($('<li/>').append(container));
+                $('<li/>')
+                        .data('file.imageUploader', this)
+                        .append(container)
+                        .appendTo(self.files);
 
                 if (self.templateOptions.initForm) {
                     self.templateOptions.initForm(container.find('form'), self.index);
                 }
                 self.index++;
-                setCookie(self.widgetContainer.attr('id'), '', {path: ''});
             });
+        };
+
+        this.save = function() {
+            var
+                    values = [],
+                    li = this.files.find('li');
+            this.files.find('li').each(function() {
+                values.push($(this).data('file.imageUploader'));
+            });
+            localStorage[this.storagePath] = JSON.stringify(values);
+        };
+
+        this.done = function(e, data) {
+            this.addImages(data.result.files);
+            this.save();
         }.bind(this);
 
         this.fail = function(e, data) {
@@ -108,11 +108,14 @@
         if (this.input.attr('multiple') === 'multiple') {
             this.files.sortable({
                 opacity: 0.6,
-                cursor: 'move'
+                cursor: 'move',
+                update: this.changeSort
                         //handle: "img"
             });
             this.files.disableSelection();
         }
+        this._ctor();
+        delete this._ctor;
     }
 
     var methods = {
