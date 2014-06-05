@@ -31,9 +31,14 @@
             var progress = parseInt(data.loaded / data.total * 100, 10);
             this.progressLine.css('width', progress + '%');
         }.bind(this);
-        
+
         this.changeSort = function(e, data) {
             this.save();
+        }.bind(this);
+
+        this.validate = function() {
+            this.widgetContainer.find('form').submit();
+            return false;
         }.bind(this);
 
         this.addImages = function(files) {
@@ -52,8 +57,18 @@
                     self.save();
                 });
 
+                var form = container.find('form');
+                if (this.form !== undefined) {
+                    $.each(this.form, function() {
+                        form.find('[name="' + this.name + '"]').val(this.value);
+                    });
+                }
+                form.find('input').change(function() {
+                    self.save();
+                });
+
                 if (self.templateOptions.renameIds) {
-                    self.templateOptions.renameIds(container.find('form'), self.index);
+                    self.templateOptions.renameIds(form, self.index);
                 }
 
                 $('<li/>')
@@ -62,20 +77,26 @@
                         .appendTo(self.files);
 
                 if (self.templateOptions.initForm) {
-                    self.templateOptions.initForm(container.find('form'), self.index);
+                    self.templateOptions.initForm(form, self.index);
+                    form.submit(function() {
+                        return false;
+                    });
                 }
+
                 self.index++;
             });
         };
 
         this.save = function() {
-            var
-                    values = [],
-                    li = this.files.find('li');
+            var values = [];
             this.files.find('li').each(function() {
-                values.push($(this).data('file.imageUploader'));
+                var
+                        $this = $(this),
+                        file = $this.data('file.imageUploader');
+                file.form = $this.find('form').serializeArray();
+                values.push(file);
             });
-            localStorage[this.storagePath] = JSON.stringify(values);
+            localStorage[this.storagePath] = JSON.stringify(values).replace(/{"name":"_csrf".*?},?/g, '');
         };
 
         this.done = function(e, data) {
@@ -94,6 +115,7 @@
         this.progressLine = this.widgetContainer.find(this.progressLine);
         this.files = this.widgetContainer.find(this.files);
         this.template = $(this.template);
+        this.targetForm = $(this.targetForm);
 
         this.input.fileupload({
             dataType: 'json',
@@ -114,6 +136,9 @@
             });
             this.files.disableSelection();
         }
+
+        this.targetForm.submit(this.validate);
+
         this._ctor();
         delete this._ctor;
     }
@@ -138,20 +163,6 @@
             $.error('Метод с именем ' + method + ' не существует для jQuery.imageUploader');
         }
     };
-
-    var addImage = function(e, data) {
-        $.each(data.files, function(index, file) {
-            container.find('form').on('submit', function() {
-                var fmdata = $(this).yiiActiveForm('data');
-                if (!fmdata.validated) {
-                    return false;
-                }
-                fmdata.validated = fmdata.submitting = false;
-                data.submit();
-            });
-        });
-    };
-
 }
 )(jQuery);
 
@@ -218,25 +229,4 @@ $(function() {
             }, 5000);
         }));
     }
-
-    $('.fileupload-widget').each(function(index, div) {
-        var
-                _div = $(div),
-                _form = $(_div.data('formselector')),
-                container = $('<div/>'),
-                data = _div.data();
-        _form.append(container);
-        _form.submit(function() {
-            container.children().remove();
-            _div.find('.uploadcontainer').each(function(index, image) {
-                if (!$(image).data('submited')) {
-                    //return false;
-                }
-                container.append($('<input/>')
-                        //.attr('hidden', 'hidden')
-                        .attr('name', data.object + '[' + data.property + '][]').val($(image).data().files[0].name));
-            });
-            return false;
-        });
-    });
 });

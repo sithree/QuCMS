@@ -107,6 +107,7 @@ class ImageUploader extends Widget
         $options = Json::encode(array_merge([
                     'sections' => $this->_behavior->sections,
                     'template' => strtr($this->_templateItem, array_map($replaceIds, $this->templateParts)),
+                    'targetForm' => '#'.$this->targetForm->id,
                     'templateOptions' => $this->_templateItem
                                 ], array_map($replaceIds, $this->clientOptions)));
         $this->view->registerJs("jQuery('#{$this->id}').imageUploader($options);");
