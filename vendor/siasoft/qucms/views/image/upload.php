@@ -22,7 +22,6 @@ $template1 = $uploader1->beginTemplate();
     {label}
     <div class="buttons">
         {deleteButton}
-        {sendButton}
     </div>
 </div>
 

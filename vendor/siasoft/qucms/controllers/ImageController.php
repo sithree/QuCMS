@@ -86,15 +86,16 @@ class ImageController extends Controller
 
     public function actionUploadImage()
     {
-        $images = Json::decode(Yii::$app->request->cookies->getValue('images', '[]'));
+        //$images = Json::decode(Yii::$app->request->cookies->getValue('images', '[]'));
         $imageUploader = new UploadHandler([
             'image_versions' => [],
             'upload_dir' => Yii::$app->basePath . '/web/img/upload/',
             'upload_url' => '/img/upload/'
                 ], false);
         $image = $imageUploader->post(false);
-        $images = array_merge($images, $image['files']);
-        Yii::$app->response->add(new Cookie(['name' => 'images', 'path' => Yii::$app->request->url, 'value' => Json::encode($images)]));
+        //$images = array_merge($images, $image['files']);
+        //Yii::$app->response->add(new Cookie(['name' => 'images', 'path' => Yii::$app->request->url, 'value' => Json::encode($images)]));
+        return Json::encode($image);
     }
 
     /**

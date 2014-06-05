@@ -55,14 +55,12 @@ class ImageUploader extends Widget
     public $templateParts = [
         '{img}' => '<img id="{id}-img" />',
         '{label}' => '<span class="label label-primary" id={id}-label></span>',
-        '{deleteButton}' => '<button class="btn btn-danger btn-xs" id="{id}-delete"><i class="fa fa-minus"></i></button>',
-        '{sendButton}' => '<button class="btn btn-primary btn-xs" id="{id}-upload"><i class="fa fa-upload"></i></button>'
+        '{deleteButton}' => '<button class="btn btn-danger btn-xs" id="{id}-delete"><i class="fa fa-minus"></i></button>'
     ];
     public $clientOptions = [
         'imageSelector' => '#{id}-img',
         'labelSelector' => '#{id}-label',
-        'deleteButtonSelector' => '#{id}-delete',
-        'sendButtonSelector' => '#{id}-upload'
+        'deleteButtonSelector' => '#{id}-delete'
     ];
 
     public function init()

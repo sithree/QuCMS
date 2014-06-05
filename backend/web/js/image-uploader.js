@@ -1,55 +1,124 @@
 'use strict';
 (function($) {
-    function ImageUploader(widget, input) {
-        var self = this;
-        this.widget = widget;
-        this.progressBar = widget.find('.progress');
-        this.progressLine = widget.find('.progress-bar');
+
+    function setCookie(name, value, options) {
+        options = options || {};
+
+        var expires = options.expires;
+
+        if (typeof expires == "number" && expires) {
+            var d = new Date();
+            d.setTime(d.getTime() + expires * 1000);
+            expires = options.expires = d;
+        }
+        if (expires && expires.toUTCString) {
+            options.expires = expires.toUTCString();
+        }
+
+        value = encodeURIComponent(value);
+
+        var updatedCookie = name + "=" + value;
+
+        for (var propName in options) {
+            updatedCookie += "; " + propName;
+            var propValue = options[propName];
+            if (propValue !== true) {
+                updatedCookie += "=" + propValue;
+            }
+        }
+        document.cookie = updatedCookie;
+    }
+
+
+    function ImageUploader(widgetContainer, options) {
+        this.widgetContainer = widgetContainer;
+        this.input = '.image-uploader';
+        this.progressBar = '.progress';
+        this.progressLine = '.progress-bar';
+        this.files = '.files';
+        this.index = 0;
+
+        this.remove = function() {
+            $(this).parents('li').first().remove();
+        };
 
         this.start = function(e, data) {
-            self.progressBar.css('display', 'block');
-        };
+            this.progressLine.css('width', '0%');
+            this.progressBar.show();
+        }.bind(this);
 
         this.stop = function(e, data) {
-            self.progressBar.fadeOut(function() {
-                self.progressLine.css('width', '0%');
-            });
-        };
+            this.progressBar.fadeOut(2000);
+        }.bind(this);
 
         this.progress = function(e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
-            self.progressLine.css('width', progress + '%');
-        };
+            this.progressLine.css('width', progress + '%');
+        }.bind(this);
 
-        input.fileupload({
+        this.done = function(e, data) {
+            var self = this;
+            $.each(data.result.files, function(index, file) {
+                if (self.input.attr('multiple') !== 'multiple' && self.files.find('li').length > 0) {
+                    self.remove.apply(self.files.find('li').children().first());
+                }
+                var container = self.template.clone().hide();
+                container.find(self.imageSelector).removeAttr('id').attr('src', file.url).load(function() {
+                    container.show();
+                });
+                container.find(self.labelSelector).removeAttr('id').text(file.name);
+                container.find(self.deleteButtonSelector).removeAttr('id').on('click.imageUploader', self.remove);
+
+                if (self.templateOptions.renameIds) {
+                    self.templateOptions.renameIds(container.find('form'), self.index);
+                }
+
+                self.files.append($('<li/>').append(container));
+
+                if (self.templateOptions.initForm) {
+                    self.templateOptions.initForm(container.find('form'), self.index);
+                }
+                self.index++;
+                setCookie(self.widgetContainer.attr('id'), '', {path: ''});
+            });
+        }.bind(this);
+
+        this.fail = function(e, data) {
+            alert(data);
+        }.bind(this);
+
+        $.extend(this, options);
+
+        this.input = this.widgetContainer.find(this.input);
+        this.progressBar = this.widgetContainer.find(this.progressBar);
+        this.progressLine = this.widgetContainer.find(this.progressLine);
+        this.files = this.widgetContainer.find(this.files);
+        this.template = $(this.template);
+
+        this.input.fileupload({
             dataType: 'json',
             singleFileUploads: false,
-            start: self.start,
-            stop: self.stop,
-            progressall: self.progress
+            start: this.start,
+            stop: this.stop,
+            progressall: this.progress,
+            done: this.done,
+            fail: this.fail
         });
+
+        if (this.input.attr('multiple') === 'multiple') {
+            this.files.sortable({
+                opacity: 0.6,
+                cursor: 'move'
+                        //handle: "img"
+            });
+            this.files.disableSelection();
+        }
     }
 
     var methods = {
         init: function(options) {
-            //settings.self = this;
-            //settings.files = this.find(settings.filesSelector);
-            //settings.tmp = $(settings.template);
             return this.each(function() {
-                var
-                        $this = $(this),
-                        input = $this.find('.image-uploader'),
-                        imageUploader = $.extend(new ImageUploader($this, input), options);
-                //input.data('imageUploader', settings);
-
-//                if (input.attr('multiple') === 'multiple') {
-//                    settings.files.sortable({
-//                        opacity: 0.6,
-//                        cursor: 'move'
-//                                //handle: "img"
-//                    });
-//                    settings.files.disableSelection();
-//                }
+                new ImageUploader($(this), options);
             });
         },
         destroy: function() {
@@ -68,34 +137,7 @@
     };
 
     var addImage = function(e, data) {
-        var
-                $this = $(this),
-                settings = $this.data('imageUploader'),
-                container = settings.tmp.clone(),
-                image = container.find(settings.imageSelector).removeAttr('id'),
-                label = container.find(settings.labelSelector).removeAttr('id'),
-                _delete = container.find(settings.deleteButtonSelector).removeAttr('id');
-        data.context = container;
         $.each(data.files, function(index, file) {
-            label.text(file.name);
-            if ($this.attr('multiple') !== 'multiple') {
-                settings.files.children().remove();
-            }
-
-            if (settings.templateOptions.renameIds) {
-                settings.templateOptions.renameIds(container.find('form'), 10);
-            }
-
-            settings.files.append($('<li/>').append(container));
-
-            if (settings.templateOptions.initForm) {
-                settings.templateOptions.initForm(container.find('form'), 10);
-            }
-
-            _delete.on('click.imageUploader', function() {
-                container.remove();
-            });
-
             container.find('form').on('submit', function() {
                 var fmdata = $(this).yiiActiveForm('data');
                 if (!fmdata.validated) {
@@ -160,17 +202,6 @@ $(function() {
 
     //svar sections = eval($('#fileupload').data('SectionName'));
 
-    //Отправка всех файлов
-    $('.sendall').click(function() {
-        $(this).parents('.fileupload-widget').find('.uploadcontainer').each(function(index, div) {
-            var
-                    _div = $(div);
-            if (!_div.data('submited'))
-                _div.data().submit();
-            return false;
-        });
-    });
-
     //Вывоводит уведомления
     function pushMessage(where, text) {
         where.children().remove();
@@ -204,92 +235,5 @@ $(function() {
             });
             return false;
         });
-    });
-
-    //Инициализация плагина
-    $('.fileupload').fileupload({
-        dataType: 'json',
-        autoUpload: false //Отправка только ручками
-                //добавление файлов
-    }).on('fileuploadadd', function(e, data) {
-        var
-                _this = $(this),
-                _container = _this.parents('.fileupload-widget');
-        $.each(data.files, function(index, file) {
-            if (!file.type.length || !(/^image\/(gif|jpe?g|png)$/i).test(file.type)) {
-                pushMessage(_container.find('.messages'), file.name + ': Выбран не верный формат.');
-                return false;
-            }
-            var container = ImageContainerTemplate.clone(true);
-            data.context = container;
-            //генерация preview
-            loadImage(
-                    file,
-                    function(img) {
-                        var
-                                span = container.find('.img-thumbnail span');
-                        $(img).insertBefore(span.text(file.name));
-                    },
-                    {
-                        maxWidth: 300,
-                        maxHeight: 255
-                    });
-            if (_this.attr('multiple') !== 'multiple') {
-                _container.find('.uploadcontainer').remove();
-            }
-            _container.find('.files').append(container.data(data));
-            validator(container);
-
-            var sectionContainer = container.find('.sections');
-            _container.data('settings').sections.forEach(function(section) {
-                sectionContainer.append($('<input hidden name="sections[]"/>').val(section));
-            });
-
-            if (_this.attr('multiple') === 'multiple') {
-                // _container.find('.files').sortable('refresh');
-            }
-        });
-    }).on('fileuploadsubmit', function(e, data) {
-
-        if (!$(this).parents('.fileupload-widget').find('form').yiiActiveForm('data').validated) {
-            return false;
-        }
-        $(this).parents('.fileupload-widget').find('.progress').fadeIn();
-        data.context.find('.upload').css('display', 'none');
-        //Отправка дополнительных данных
-        data.formData = data.context.find('form').serializeArray();
-    }).on('fileuploadprogressall', function(e, data) {
-        var
-                progress = parseInt(data.loaded / data.total * 100, 10),
-                _container = $(this).parents('.fileupload-widget');
-        _container.find('.progress-bar').css(
-                'width',
-                progress + '%'
-                );
-        //при полном прогрессе скрываем progressbar
-        if (progress === 100) {
-            _container.find('.progress').fadeOut(function() {
-                _container.find('.progress-bar').css('width', '0%');
-            });
-        }
-
-    }).on('fileuploaddone', function(e, data) {
-        if (data.result.error) {
-            data.context.find('.upload').css('display', 'inline');
-            pushMessage(data.context.find('.summary'), data.result.name + ': ' + data.result.error);
-        } else {
-            data.context.data('submited', true);
-        }
-
-    }).on('fileuploadfail', function(e, data) {
-        $.each(data.files, function(index, file) {
-            data.context.find('.upload').css('display', 'inline');
-            pushMessage(data.context.find('.summary'), file.name + ': ' + file.error);
-        });
-    }).prop('disabled', !$.support.fileInput)
-            .parent().addClass($.support.fileInput ? undefined : 'disabled');
-    $('.fileupload').each(function(index, element) {
-        var _fileUpload = $(element);
-        _fileUpload.fileupload('option', 'dropZone', _fileUpload.parents('.fileupload-widget'));
     });
 });
