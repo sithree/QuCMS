@@ -1,5 +1,10 @@
 'use strict';
 (function($) {
+    function Validator() {
+        this.forValidate = 0;
+        this.validated = 0;
+    };
+    
     function ImageUploader(widgetContainer, options) {
         this.widgetContainer = widgetContainer;
         this.input = '.image-uploader';
@@ -8,10 +13,22 @@
         this.files = '.files';
         this.index = 0;
         this.storagePath = location.pathname.replace(/[.//]/g, '_') + '_' + this.widgetContainer.attr('id');
+        this.forValidate = -1;
+        this.validated = 0;
 
         this._ctor = function() {
             var strVal = localStorage[this.storagePath];
             this.addImages(strVal === undefined ? [] : JSON.parse(strVal));
+
+            var data = this.targetForm.data('yiiActiveForm').settings;
+            if (!data.beforeSubmit) {
+                data.beforeSubmit = function(form) {
+                    alert('');
+                    var e = $.Event('validate');
+                    form.trigger(e);
+                    return e.result;
+                };
+            }
         };
 
         this.remove = function(container) {
@@ -36,9 +53,22 @@
             this.save();
         }.bind(this);
 
-        this.validate = function() {
-            this.widgetContainer.find('form').submit();
+        this.beforeSubmit = function(form) {
+            if (++this.validated === this.forValidate) {
+                this.targetForm.submit();
+            }
             return false;
+        }.bind(this);
+
+        this.validate = function() {
+            if (this.forValidate !== this.validated) {
+                var forms = this.widgetContainer.find('form');
+                this.forValidate = forms.length;
+                forms.submit();
+                return false;
+            }
+            this.validated = 0;
+            this.forValidate = -1;
         }.bind(this);
 
         this.addImages = function(files) {
@@ -77,13 +107,9 @@
                         .appendTo(self.files);
 
                 if (self.templateOptions.initForm) {
-                    self.templateOptions.initForm(form, self.index);
-                    form.submit(function() {
-                        return false;
-                    });
+                    self.templateOptions.initForm(form, self.index++);
+                    form.data('yiiActiveForm').settings.beforeSubmit = self.beforeSubmit;
                 }
-
-                self.index++;
             });
         };
 
@@ -131,13 +157,12 @@
             this.files.sortable({
                 opacity: 0.6,
                 cursor: 'move',
-                update: this.changeSort
-                        //handle: "img"
+                update: this.changeSort,
+                handle: "img"
             });
-            this.files.disableSelection();
         }
 
-        this.targetForm.submit(this.validate);
+        this.targetForm.on('validate', this.validate);
 
         this._ctor();
         delete this._ctor;

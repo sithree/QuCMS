@@ -13,11 +13,12 @@ namespace siasoft\qucms\models;
  *
  * @author SW-PC1
  */
-class FakeImageModel extends \yii\db\ActiveRecord {
+class FakeImageModel extends \yii\db\ActiveRecord
+{
+    public $name;
 
-    public $imageId;
-
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'images' => [
                 'class' => 'siasoft\qucms\behaviors\ImageBehavior',
@@ -37,12 +38,21 @@ class FakeImageModel extends \yii\db\ActiveRecord {
         ];
     }
 
-    public function save($runValidation = true, $attributeNames = null) {
+    public function save($runValidation = true, $attributeNames = null)
+    {
         
     }
 
-    public function attributes() {
-        return [];
+    public function rules()
+    {
+        return [
+            [['name'], 'required']
+        ];
+    }
+
+    public function attributes()
+    {
+        return ['name'];
     }
 
 }

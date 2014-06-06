@@ -10,6 +10,7 @@ $this->registerAssetBundle('siasoft\qucms\web\FileUploadAsset');
 $this->registerJsFile('/js/image-uploader.js', ['siasoft\qucms\web\FileUploadAsset']);
 
 $form = ActiveForm::begin();
+echo $form->field($model, 'name');
 echo Html::submitButton();
 ActiveForm::end();
 
