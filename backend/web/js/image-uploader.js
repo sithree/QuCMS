@@ -1,10 +1,41 @@
 'use strict';
 (function($) {
-    function Validator() {
-        this.forValidate = 0;
+    function Validator(targetForm) {
+        this.uploaders = [];
+        this.forValidate = -1;
         this.validated = 0;
-    };
-    
+        this.targetForm = targetForm;
+
+        this.add = function(imageUploader) {
+            this.uploaders.push(imageUploader);
+        };
+
+        this.beforeSubmit = function(form) {
+            if (++this.validated === this.forValidate) {
+                this.targetForm.submit();
+            }
+            return false;
+        }.bind(this);
+
+        this.targetForm.data('yiiActiveForm').settings.beforeSubmit = function() {
+            if (this.forValidate !== this.validated) {
+                this.forValidate = this.validated = 0;
+                var self = this;
+                $.each(this.uploaders, function() {
+                    var forms = this.widgetContainer.find('form');
+                    self.forValidate += forms.length;
+                });
+                $.each(this.uploaders, function() {
+                    var forms = this.widgetContainer.find('form');
+                    forms.submit();
+                });
+                return false;
+            }
+            this.forValidate = -1;
+        }.bind(this);
+    }
+    ;
+
     function ImageUploader(widgetContainer, options) {
         this.widgetContainer = widgetContainer;
         this.input = '.image-uploader';
@@ -13,22 +44,17 @@
         this.files = '.files';
         this.index = 0;
         this.storagePath = location.pathname.replace(/[.//]/g, '_') + '_' + this.widgetContainer.attr('id');
-        this.forValidate = -1;
-        this.validated = 0;
 
         this._ctor = function() {
+            this.validator = this.targetForm.data('validator');
+            if (!this.validator) {
+                this.validator = new Validator(this.targetForm);
+                this.targetForm.data('validator', this.validator);
+            }
+            this.validator.add(this);
+
             var strVal = localStorage[this.storagePath];
             this.addImages(strVal === undefined ? [] : JSON.parse(strVal));
-
-            var data = this.targetForm.data('yiiActiveForm').settings;
-            if (!data.beforeSubmit) {
-                data.beforeSubmit = function(form) {
-                    alert('');
-                    var e = $.Event('validate');
-                    form.trigger(e);
-                    return e.result;
-                };
-            }
         };
 
         this.remove = function(container) {
@@ -51,24 +77,6 @@
 
         this.changeSort = function(e, data) {
             this.save();
-        }.bind(this);
-
-        this.beforeSubmit = function(form) {
-            if (++this.validated === this.forValidate) {
-                this.targetForm.submit();
-            }
-            return false;
-        }.bind(this);
-
-        this.validate = function() {
-            if (this.forValidate !== this.validated) {
-                var forms = this.widgetContainer.find('form');
-                this.forValidate = forms.length;
-                forms.submit();
-                return false;
-            }
-            this.validated = 0;
-            this.forValidate = -1;
         }.bind(this);
 
         this.addImages = function(files) {
@@ -108,7 +116,7 @@
 
                 if (self.templateOptions.initForm) {
                     self.templateOptions.initForm(form, self.index++);
-                    form.data('yiiActiveForm').settings.beforeSubmit = self.beforeSubmit;
+                    form.data('yiiActiveForm').settings.beforeSubmit = self.validator.beforeSubmit;
                 }
             });
         };
